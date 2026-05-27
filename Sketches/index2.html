@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJ Style Dropdown</title>
+    <style>
+        body {
+            background-color: #050505;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+            margin: 0;
+            color: white;
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: #0c0c0c;
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 18px 20px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        /* Подсветка границ при фокусе */
+        .input-field:focus {
+            border-color: #666;
+        }
+
+        .input-field::placeholder {
+            color: #777;
+        }
+
+        /* Выпадающее меню скрыто по умолчанию */
+        .dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background-color: #1a1a1a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10;
+            
+            /* Плавное появление (опционально) */
+            display: none; 
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        /* Класс для показа меню */
+        .dropdown.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 20px 20px 10px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .station-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .station-item {
+            padding: 15px 20px;
+            font-size: 16px;
+            color: #efefef;
+            cursor: pointer;
+            border-top: 1px solid #2a2a2a;
+            transition: background-color 0.2s;
+        }
+
+        .station-item:hover {
+            background-color: #252525;
+        }
+    </style>
+</head>
+<body>
+
+<div class="search-wrapper">
+    <input type="text" class="input-field" placeholder="From" id="searchInput" autocomplete="off">
+
+    <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-header">Popular stations</div>
+        <ul class="station-list">
+            <li class="station-item">Stockholm Central</li>
+            <li class="station-item">Göteborg Central</li>
+            <li class="station-item">Malmö Central</li>
+            <li class="station-item">Alvesta station</li>
+            <li class="station-item">Uppsala Central</li>
+            <li class="station-item">Hässleholm Central</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('searchInput');
+    const menu = document.getElementById('dropdownMenu');
+
+    // 1. Показываем меню при фокусе
+    input.addEventListener('focus', () => {
+        menu.classList.add('active');
+    });
+
+    // 2. Скрываем меню при потере фокуса
+    input.addEventListener('blur', () => {
+        setTimeout(() => {
+            menu.classList.remove('active');
+        }, 150);
+    });
+
+    // 3. (Бонус) Выбор элемента из списка
+    const items = document.querySelectorAll('.station-item');
+    items.forEach(item => {
+        item.addEventListener('click', () => {
+            input.value = item.textContent;
+        });
+    });
+</script>
+
+</body>
+</html>

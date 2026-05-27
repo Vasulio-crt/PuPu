@@ -1,0 +1,175 @@
+@font-face {
+	font-family: 'MyFont';
+	src: url('Nunito.ttf');
+}
+
+* {
+	font-family: 'MyFont', Arial, Helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--color-1: #46b4d6;
+	--color-2: #00bd8f;
+	--color-3: #121212;
+	--color-4: #fcfcfc;
+	--color-3-a: #111;
+	--color-3-b: #333;
+	--color-3-a-hover: #161616;
+	--color-3-b-hover: #444;
+}
+
+.c-white {
+	color: white;
+}
+
+body {
+	min-height: 100vh;
+	margin: 0 15rem;
+	background-color: var(--color-3);;
+}
+
+header {
+	color: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem 0;
+	border-bottom: 2px solid var(--color-3-b);
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: var(--color-3);
+	margin-top: 2rem;
+}
+
+.interactive-elem {
+	border: 2px solid var(--color-3-b);
+	border-radius: 24px;
+	padding: 18px 24px;
+	color: white;
+	font-size: 18px;
+	transition: border-color 0.3s, background-color 0.3s;
+}
+
+input {
+	background-color: var(--color-3-a);
+	width: 100%;
+	outline: none;
+	box-sizing: border-box;
+	&::placeholder {
+		color: #777;
+		font-weight: 400;
+	}
+	&:focus {
+		border-color: var(--color-3-b-hover);
+		background-color: var(--color-3-a-hover);
+	}
+	&:hover {
+		border-color: var(--color-3-b-hover);
+		background-color: var(--color-3-a-hover);
+	}
+}
+
+input[type="number"] {
+	appearance: textfield
+}
+
+button {
+	background-color: var(--color-1);
+	cursor: pointer;
+	font-weight: bold;
+	&:hover {
+		background-color: var(--color-2);
+	}
+}
+
+.size-display-1 {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 1rem 0;
+	width: 44rem;
+}
+
+.search-row {
+	display: flex;
+	gap: 12px;
+	width: 100%;
+	max-width: 800px;
+}
+
+.passengers {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+	width: 100%;
+	max-width: 800px;
+}
+
+.passenger {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	&:hover {
+		border-color: var(--color-3-b-hover);
+		background-color: var(--color-3-a-hover);
+	}
+	& > p {
+		margin-left: 12px;
+	}
+	& > svg {
+		padding: 8px;
+		border-radius: 1rem;
+		/* background-color: DarkCyan; */
+	}
+}
+
+.white-and-black {
+	color: var(--color-3);
+	background-color: var(--color-4);
+}
+
+@media (max-width: 500px) {
+	body {
+		margin: 0;
+	}
+	
+	header {
+		padding: 0.5rem;
+	}
+
+	.search-row {
+		flex-direction: column;
+	}
+	
+	.size-display-1 {
+		width: 100%;
+	}
+
+	.passengers {
+		display: flex;
+		flex-direction: column;
+		
+	}
+}
+
+@media (min-width: 500px) and (max-width: 1024px) {
+	body {
+		margin: 0;
+	}
+	header {
+		padding: 0.5rem;
+	}
+	main {
+		margin: 1rem;
+	}
+
+	.size-display-1 {
+		max-width: 95vw;
+	}
+}
