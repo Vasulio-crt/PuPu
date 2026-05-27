@@ -1,6 +1,9 @@
 package handlers
 
-import "sync"
+import (
+	"sellTrainTicket/customType"
+	"sync"
+)
 
 var (
 	nextID = 1
@@ -8,16 +11,7 @@ var (
 	mu     sync.RWMutex
 )
 
-type RegisterUser struct {
-	Login      string `json:"login"`
-	Password   string `json:"password"`
-	Email      string `json:"email"`
-	Name       string `json:"name"`
-	Surname    string `json:"surname"`
-	Patronymic string `json:"patronymic"`
-}
-
 type User struct {
 	ID       int
-	DataUser RegisterUser
+	DataUser customType.RegisterUser
 }

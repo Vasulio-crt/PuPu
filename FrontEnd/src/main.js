@@ -12,6 +12,6 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
-app.provide('hostBacked', 'http://172.21.71.49:8080')
+app.provide('hostBacked', 'http://127.0.0.1:8080')
 
 app.mount('#app')

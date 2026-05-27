@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"sellTrainTicket/customType"
+	"sellTrainTicket/myDatabase"
 	"sellTrainTicket/utilities"
 	"strconv"
 
@@ -8,10 +10,20 @@ import (
 )
 
 func Register(c fiber.Ctx) error {
-	registerUser := RegisterUser{}
+	registerUser := customType.RegisterUser{}
 
 	if err := c.Bind().Body(&registerUser); err != nil {
 		return c.Status(400).SendString("Bad Request")
+	}
+
+	exists, err := myDatabase.UserExists(registerUser.Login, registerUser.Email)
+	if err != nil {
+		println("Ошибка при проверке существования пользователя: %v", err)
+		return c.Status(500).SendString("Internal Server Error")
+	}
+
+	if exists {
+		return c.Status(409).SendString("User with this login or email already exists")
 	}
 
 	hashedPassword, err := utilities.HashPassword(registerUser.Password)
@@ -20,12 +32,12 @@ func Register(c fiber.Ctx) error {
 	}
 
 	registerUser.Password = hashedPassword
-
 	mu.Lock()
 	user := User{
 		ID:       nextID,
 		DataUser: registerUser,
 	}
+	myDatabase.AddUserDB(registerUser)
 	users[nextID] = user
 	nextID++
 	mu.Unlock()

@@ -1,10 +1,10 @@
-package database
+package myDatabase
 
 import (
 	"database/sql"
 	"log"
 	"os"
-	"sellTrainTicket/handlers"
+	"sellTrainTicket/customType"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -24,12 +24,11 @@ func Init() {
 	if err != nil {
 		log.Fatalf("Ошибка при открытии/создании базы данных SQLite: %v", err)
 	}
-	defer DB.Close()
 
 	if !dbExists {
 		log.Printf("Файл базы данных '%s' не найден. Создание таблиц...", dbName)
 		log.Println("Выполнение скрипта create_db.sql...")
-		sqlScript, err := os.ReadFile("database/create_db.sql")
+		sqlScript, err := os.ReadFile("myDatabase/create_db.sql")
 		if err != nil {
 			log.Fatalf("Ошибка при чтении файла create_db.sql: %v", err)
 		}
@@ -48,6 +47,20 @@ func Init() {
 	log.Println("Успешное подключение к базе данных.")
 }
 
-func AddUserDB(user handlers.User) {
+func AddUserDB(user customType.RegisterUser) {
+	_, err := DB.Exec("insert into users (login, password, email, name, surname, patronymic) values (?, ?, ?, ?, ?, ?)",
+		user.Login, user.Password, user.Email, user.Name, user.Surname, user.Patronymic)
+	if err != nil {
+		log.Fatalf("Ошибка при добавление пользователя: %v", err)
+	}
+}
 
+func UserExists(login, email string) (bool, error) {
+	var exists bool
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE login = ? OR email = ?)"
+	err := DB.QueryRow(query, login, email).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
 }
