@@ -1,0 +1,1 @@
+SELECT id FROM Station WHERE name IN ('Болотная', 'Новосибирск');

@@ -2,6 +2,7 @@ package myDatabase
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"os"
 	"sellTrainTicket/customType"
@@ -90,6 +91,48 @@ func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
 		routes = append(routes, route)
 	}
 	return routes, nil
+}
+
+func CreateStationDB(req []string) ([]int64, error) {
+	var results_id []int64
+	for _, v := range req {
+		result, err := DB.Exec("INSERT INTO Station(name) VALUES (?)", v)
+		if err != nil {
+			return nil, err
+		}
+		last_id, err := result.LastInsertId()
+		if err != nil {
+			return nil, err
+		}
+		results_id = append(results_id, last_id)
+	}
+
+	return results_id, nil
+}
+
+func CreateRouteDB(req customType.RouteDB) error {
+	var ids []int
+	rows, err := DB.Query("SELECT id FROM Station WHERE name IN (?, ?);", req.FromStation, req.ToStation)
+	if err != nil {
+		return err
+	}
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return err
+		}
+		ids = append(ids, id)
+	}
+	rows.Close()
+	if len(ids) < 2 {
+		return errors.New("ids stations < 2")
+	}
+	query := `INSERT INTO Route(sending, arrival, from_station_id, to_station_id, distance) VALUES
+	(datetime(?), datetime(?), ?, ?, ?);`
+	if _, err = DB.Exec(query, req.Sending, req.Arrival, ids[0], ids[1], req.Distance); err != nil {
+		return err
+	}
+	return nil
 }
 
 // !-- Для админов --!
