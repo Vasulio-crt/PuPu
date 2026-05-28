@@ -47,8 +47,8 @@ func Init() {
 	log.Println("Успешное подключение к базе данных.")
 }
 
-func AddUserDB(user customType.RegisterUser) {
-	_, err := DB.Exec("insert into users (login, password, email, name, surname, patronymic) values (?, ?, ?, ?, ?, ?)",
+func AddUserDB(user customType.User) {
+	_, err := DB.Exec("INSERT INTO users (login, password, email, name, surname, patronymic) VALUES (?, ?, ?, ?, ?, ?)",
 		user.Login, user.Password, user.Email, user.Name, user.Surname, user.Patronymic)
 	if err != nil {
 		log.Fatalf("Ошибка при добавление пользователя: %v", err)
@@ -63,4 +63,36 @@ func UserExists(login, email string) (bool, error) {
 		return false, err
 	}
 	return exists, nil
+}
+
+// !-- Для админов --!
+func GetAllUsers() ([]*customType.User, error) {
+	rows, err := DB.Query("SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []*customType.User
+	for rows.Next() {
+		var user customType.User
+		err := rows.Scan(&user.ID, &user.Login, &user.Password, &user.Email,
+			&user.Name, &user.Surname, &user.Patronymic)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, &user)
+	}
+
+	return users, nil
+}
+
+func GetUser(id int) (customType.User, error) {
+	var user customType.User
+	err := DB.QueryRow("SELECT * FROM users WHERE id = ?", id).Scan(&user.ID, &user.Login,
+		&user.Password, &user.Email, &user.Name, &user.Surname, &user.Patronymic)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }

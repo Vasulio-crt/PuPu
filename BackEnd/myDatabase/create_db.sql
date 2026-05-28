@@ -1,9 +1,9 @@
 CREATE TABLE users (
-    id INT PRIMARY KEY,
-    login VARCHAR(255) UNIQUE NOT NULL,
+    id INTEGER PRIMARY KEY,
+    login VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    surname VARCHAR(255) NOT NULL,
-    patronymic VARCHAR(255)
+    email VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    surname VARCHAR(60) NOT NULL,
+    patronymic VARCHAR(60)
 );
