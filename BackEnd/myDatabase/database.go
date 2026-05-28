@@ -57,7 +57,7 @@ func AddUserDB(user customType.User) {
 
 func UserExists(login, email string) (bool, error) {
 	var exists bool
-	query := "SELECT EXISTS(SELECT 1 FROM users WHERE login = ? OR email = ?)"
+	query := "SELECT EXISTS(SELECT 1 FROM Users WHERE login = ? OR email = ?)"
 	err := DB.QueryRow(query, login, email).Scan(&exists)
 	if err != nil {
 		return false, err
@@ -65,9 +65,36 @@ func UserExists(login, email string) (bool, error) {
 	return exists, nil
 }
 
+func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
+	query := `SELECT sending, arrival, S1.name AS from_station, S2.name AS to_station, distance
+		FROM Route
+		JOIN Station AS S1 ON Route.from_station_id = S1.id
+		JOIN Station AS S2 ON Route.to_station_id = S2.id
+		WHERE S1.name = ?
+			AND S2.name = ?
+			AND sending >= datetime(?)
+		LIMIT 15`
+
+	rows, err := DB.Query(query, from, to, date, date)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var routes []customType.RouteDB
+	for rows.Next() {
+		var route customType.RouteDB
+		if err := rows.Scan(&route.Sending, &route.Arrival, &route.FromStation, &route.ToStation, &route.Distance); err != nil {
+			return nil, err
+		}
+		routes = append(routes, route)
+	}
+	return routes, nil
+}
+
 // !-- Для админов --!
 func GetAllUsers() ([]*customType.User, error) {
-	rows, err := DB.Query("SELECT * FROM users")
+	rows, err := DB.Query("SELECT * FROM Users")
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +116,7 @@ func GetAllUsers() ([]*customType.User, error) {
 
 func GetUser(id int) (customType.User, error) {
 	var user customType.User
-	err := DB.QueryRow("SELECT * FROM users WHERE id = ?", id).Scan(&user.ID, &user.Login,
+	err := DB.QueryRow("SELECT * FROM Users WHERE id = ?", id).Scan(&user.ID, &user.Login,
 		&user.Password, &user.Email, &user.Name, &user.Surname, &user.Patronymic)
 	if err != nil {
 		return user, err

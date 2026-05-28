@@ -9,3 +9,11 @@ type User struct {
 	Surname    string `json:"surname"`
 	Patronymic string `json:"patronymic"`
 }
+
+type RouteDB struct {
+	Sending     string `json:"sending"`
+	Arrival     string `json:"arrival"`
+	FromStation string `json:"from_station"`
+	ToStation   string `json:"to_station"`
+	Distance    int    `json:"distance"`
+}

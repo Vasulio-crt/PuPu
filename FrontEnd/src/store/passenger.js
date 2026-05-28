@@ -1,4 +1,5 @@
-import { defineStore } from "pinia"
+import { defineStore } from "pinia";
+import { inject } from "vue";
 
 export const usePassengerStore = defineStore('passenger', {
 	state: () => ({
@@ -24,7 +25,18 @@ export const usePassengerStore = defineStore('passenger', {
 			}
 		},
 		getTrainFlights() {
-			console.log(this.data)			
+			console.log(this.data);
+			
+			// const host = inject('hostBacked');
+			// const params = new URLSearchParams({
+			// 	from: this.data.from,
+			// 	to: this.data.to,
+			// 	date: this.data.date
+			// });
+
+			// fetch(`${host}/api/getRoutes?${params.toString()}`, {
+			// 	method: 'GET'
+			// }).then(res => res.text()).then((data) => console.log('Запрос рейсов прошел успешно', data))	
 		}
 	}
 })
