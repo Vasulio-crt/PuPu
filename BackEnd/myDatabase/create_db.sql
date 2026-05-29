@@ -22,10 +22,14 @@ CREATE TABLE Route(
 	distance SMALLINT NOT NULL
 );
 
-CREATE TABLE List_stations(
+CREATE TABLE Carriage(
 	id INTEGER PRIMARY KEY,
-	route_id INTEGER NOT NULL REFERENCES Route(id),
-	station_id INTEGER NOT NULL REFERENCES Station(id),
-	stopping_time TEXT,
-	completed BOOLEAN DEFAULT FALSE
+	type VARCHAR(20) NOT NULL
 );
+
+CREATE TABLE Seat(
+	id INTEGER PRIMARY KEY,
+	number SMALLINT NOT NULL,
+	carriage_id INTEGER NOT NULL REFERENCES Carriage(id),
+	occupied INTEGER NOT NULL DEFAULT 0 REFERENCES Users(id)
+)

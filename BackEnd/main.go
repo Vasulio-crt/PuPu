@@ -20,6 +20,7 @@ func main() {
 
 	api.Post("/register", handlers.Register)
 	api.Get("/getRoutes", handlers.GetRoutes)
+	api.Get("/getStation", handlers.GetStation)
 	api.Post("/createRoute", handlers.CreateRoute)
 	api.Post("/createStation", handlers.CreateStation)
 	api.Get("/users", handlers.GetAllUsers)

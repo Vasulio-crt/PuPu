@@ -23,3 +23,12 @@ func GetRoutes(c fiber.Ctx) error {
 	}
 	return c.JSON(routes)
 }
+
+func GetStation(c fiber.Ctx) error {
+	stations, err := myDatabase.GetAllStationDB()
+	if err != nil {
+		log.Printf("Ошибка при получении станций: %v", err)
+		return c.Status(500).SendString("Internal Server Error")
+	}
+	return c.JSON(stations)
+}

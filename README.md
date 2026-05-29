@@ -1,38 +1,41 @@
-# FrontEnd
+# Надо сделать
+1. Ручку на получение и добавление мест в вагоне
+2. Ручку на добавление вагона с количеством мест
+3. Добавить таблицу passenger
+4. Добавить таблицу ticket где будет user_id и использоваться таблица passenger
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+# BackEnd
 
 ## Project Setup
-
 ```sh
+cd BackEnd
+go mod tidy
+```
+
+## Start backend
+```sh
+go run main.go
+```
+
+
+# FrontEnd
+
+## Project Setup
+```sh
+cd FrontEnd
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Customize configuration
+See [Vite Configuration Reference](https://vite.dev/config/).
 
+### Compile and Hot-Reload for Development
 ```sh
 npm run dev
 ```
 
 ### Compile and Minify for Production
-
 ```sh
 npm run build
 ```

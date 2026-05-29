@@ -19,16 +19,16 @@ func Init() {
 	}
 
 	_, err := os.Stat(dbName)
-	dbExists := !os.IsNotExist(err)
+	dbNotExists := os.IsNotExist(err)
 
 	DB, err = sql.Open("sqlite3", dbName)
 	if err != nil {
 		log.Fatalf("Ошибка при открытии/создании базы данных SQLite: %v", err)
 	}
 
-	if !dbExists {
-		log.Printf("Файл базы данных '%s' не найден. Создание таблиц...", dbName)
-		log.Println("Выполнение скрипта create_db.sql...")
+	if dbNotExists {
+		log.Printf("Файл базы данных '%s' не найден.", dbName)
+		log.Println("Выполнение скрипта create_db.sql.")
 		sqlScript, err := os.ReadFile("myDatabase/create_db.sql")
 		if err != nil {
 			log.Fatalf("Ошибка при чтении файла create_db.sql: %v", err)
@@ -39,7 +39,7 @@ func Init() {
 		}
 		log.Println("База данных и таблицы успешно созданы.")
 	} else {
-		log.Printf("База данных '%s' уже существует. Подключение...", dbName)
+		log.Printf("База данных '%s' уже существует.", dbName)
 	}
 
 	if err = DB.Ping(); err != nil {
@@ -49,7 +49,7 @@ func Init() {
 }
 
 func AddUserDB(user customType.User) {
-	_, err := DB.Exec("INSERT INTO users (login, password, email, name, surname, patronymic) VALUES (?, ?, ?, ?, ?, ?)",
+	_, err := DB.Exec("INSERT INTO users(login, password, email, name, surname, patronymic) VALUES (?, ?, ?, ?, ?, ?)",
 		user.Login, user.Password, user.Email, user.Name, user.Surname, user.Patronymic)
 	if err != nil {
 		log.Fatalf("Ошибка при добавление пользователя: %v", err)
@@ -76,7 +76,7 @@ func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
 			AND sending >= datetime(?)
 		LIMIT 15`
 
-	rows, err := DB.Query(query, from, to, date, date)
+	rows, err := DB.Query(query, from, to, date)
 	if err != nil {
 		return nil, err
 	}
@@ -93,10 +93,30 @@ func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
 	return routes, nil
 }
 
+func GetAllStationDB() (map[int]string, error) {
+	res := make(map[int]string, 5)
+	rows, err := DB.Query("SELECT * FROM Station")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var (
+			id      int
+			station string
+		)
+		if err := rows.Scan(&id, &station); err != nil {
+			return nil, err
+		}
+		res[id] = station
+	}
+	return res, nil
+}
+
 func CreateStationDB(req []string) ([]int64, error) {
 	var results_id []int64
 	for _, v := range req {
-		result, err := DB.Exec("INSERT INTO Station(name) VALUES (?)", v)
+		result, err := DB.Exec(`INSERT INTO Station(name) SELECT $1 
+			WHERE NOT (SELECT 1 FROM Station WHERE name = $1)`, v)
 		if err != nil {
 			return nil, err
 		}
@@ -111,25 +131,20 @@ func CreateStationDB(req []string) ([]int64, error) {
 }
 
 func CreateRouteDB(req customType.RouteDB) error {
-	var ids []int
-	rows, err := DB.Query("SELECT id FROM Station WHERE name IN (?, ?);", req.FromStation, req.ToStation)
-	if err != nil {
+	var from, to int
+
+	if err := DB.QueryRow("SELECT id FROM Station WHERE name = ?", req.FromStation).Scan(&from); err != nil {
 		return err
 	}
-	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
-			return err
-		}
-		ids = append(ids, id)
+	if err := DB.QueryRow("SELECT id FROM Station WHERE name = ?", req.ToStation).Scan(&to); err != nil {
+		return err
 	}
-	rows.Close()
-	if len(ids) < 2 {
-		return errors.New("ids stations < 2")
+	if from == to {
+		return errors.New("Две одинаковые станции")
 	}
 	query := `INSERT INTO Route(sending, arrival, from_station_id, to_station_id, distance) VALUES
 	(datetime(?), datetime(?), ?, ?, ?);`
-	if _, err = DB.Exec(query, req.Sending, req.Arrival, ids[0], ids[1], req.Distance); err != nil {
+	if _, err := DB.Exec(query, req.Sending, req.Arrival, from, to, req.Distance); err != nil {
 		return err
 	}
 	return nil
