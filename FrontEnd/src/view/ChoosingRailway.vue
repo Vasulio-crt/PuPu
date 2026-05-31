@@ -1,15 +1,17 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, inject } from 'vue';
 import UserPlusIcon from '@/components/icons/UserPlusIcon.vue';
 import XIcon from '@/components/icons/XIcon.vue';
 import { usePassengerStore } from '@/store/passenger';
 import UserIcon from '@/components/icons/UserIcon.vue';
+import DropdownInput from '@/components/DropdownInput.vue';
 
 defineOptions({
 	name: 'home'
 })
 
 const passengers = ref([])
+const cities = ref([])
 const isPassengerMenuOpen = ref(false)
 const store = usePassengerStore()
 
@@ -55,6 +57,8 @@ onMounted(() => {
 	} else {
 		addPassenger(passengerTypes[0])
 	}
+	const host = inject('hostBacked')
+	fetch(`${host}/api/getStation`).then(response => response.json()).then(data => cities.value = data)
 })
 
 watch(passengers, (newValue) => localStorage.setItem('passengers_view', JSON.stringify(newValue)), {deep: true})
@@ -66,8 +70,18 @@ watch(store.data, (newValue) => localStorage.setItem('store_data', JSON.stringif
 		<div class="size-display-1">
 			<h2>Путь</h2>
 			<div class="search-row">
-				<input v-model="store.data.from" type="text" placeholder="Откуда" class="interactive-elem">
-				<input v-model="store.data.to" type="text" placeholder="Куда" class="interactive-elem">
+				<DropdownInput
+					v-model="store.data.from"
+					:options="cities"
+					placeholder="Откуда"
+					:min-chars="1"
+				/>
+				<DropdownInput
+					v-model="store.data.to"
+					:options="cities"
+					placeholder="Куда"
+					:min-chars="1"
+				/>
 			</div>
 		</div>
 		<div class="size-display-1">
