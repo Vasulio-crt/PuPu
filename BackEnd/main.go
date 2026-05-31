@@ -19,6 +19,7 @@ func main() {
 	api := app.Group("/api")
 
 	api.Post("/register", handlers.Register)
+	api.Post("/login", handlers.Login)
 	api.Get("/getRoutes", handlers.GetRoutes)
 	api.Get("/getStation", handlers.GetStation)
 	api.Post("/createRoute", handlers.CreateRoute)

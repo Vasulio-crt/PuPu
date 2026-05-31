@@ -66,27 +66,22 @@ func UserExists(login, email string) (bool, error) {
 	return exists, nil
 }
 
+func GetUserPasswordDB(loginUser *customType.UserLogin) error {
+	query := "SELECT password, name, surname FROM Users WHERE login = ?"
+	err := DB.QueryRow(query, loginUser.Login).Scan(&loginUser.PasswordDB, &loginUser.Name, &loginUser.Surname)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
-	query := `SELECT
-		r.id AS route_id,
-		r.sending,
-		r.arrival,
-		r.distance,
-		s_from.name AS from_station,
-		s_to.name AS to_station,
-		sor.id AS station_on_route_id,
-		s_middle.name AS intermediate_station,
-		sor.arrival AS intermediate_arrival
+	query := `SELECT r.sending, r.arrival, s_from.name AS from_station, s_to.name AS to_station, r.distance
 	FROM Route r
 	LEFT JOIN Station s_from ON r.from_station_id = s_from.id
 	LEFT JOIN Station s_to ON r.to_station_id = s_to.id
-	LEFT JOIN Stations_on_route sor ON r.id = sor.route_id
-	LEFT JOIN Station s_middle ON sor.station_id = s_middle.id
-	WHERE
-		s_from.name = ?
-		AND s_to.name = ?
-		AND DATE(r.sending) >= ?
-	ORDER BY r.id, sor.arrival`
+	WHERE s_from.name = ? AND s_to.name = ? AND DATE(r.sending) >= ?
+	ORDER BY r.sending`
 
 	rows, err := DB.Query(query, from, to, date)
 	if err != nil {
@@ -105,21 +100,18 @@ func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
 	return routes, nil
 }
 
-func GetAllStationDB() (map[int]string, error) {
-	res := make(map[int]string, 5)
-	rows, err := DB.Query("SELECT * FROM Station")
+func GetAllStationDB() ([]string, error) {
+	var res []string
+	rows, err := DB.Query("SELECT name FROM Station")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		var (
-			id      int
-			station string
-		)
-		if err := rows.Scan(&id, &station); err != nil {
+		var station string
+		if err := rows.Scan(&station); err != nil {
 			return nil, err
 		}
-		res[id] = station
+		res = append(res, station)
 	}
 	return res, nil
 }
@@ -127,12 +119,11 @@ func GetAllStationDB() (map[int]string, error) {
 func CreateStationDB(req []string) ([]int64, error) {
 	var results_id []int64
 	for _, v := range req {
-		result, err := DB.Exec(`INSERT INTO Station(name) SELECT $1 
-			WHERE NOT (SELECT 1 FROM Station WHERE name = $1)`, v)
+		result, err := DB.Exec(`INSERT OR IGNORE INTO Station(name) VALUES (?);`, v)
 		if err != nil {
 			return nil, err
 		}
-		last_id, err := result.LastInsertId()
+		last_id, err := result.RowsAffected()
 		if err != nil {
 			return nil, err
 		}

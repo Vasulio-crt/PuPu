@@ -1,8 +1,6 @@
-SELECT sending, arrival, S1.name AS from_station_name, S2.name AS to_station_name, distance
-FROM Route
-JOIN Station AS S1 ON Route.from_station_id = S1.id
-JOIN Station AS S2 ON Route.to_station_id = S2.id
-WHERE S1.name = 'Томск'
-	AND S2.name = 'Новосибирск'
-	AND sending >= datetime('2025-05-29')
-LIMIT 15
+SELECT r.sending, r.arrival, s_from.name AS from_station, s_to.name AS to_station, r.distance
+FROM Route r
+LEFT JOIN Station s_from ON r.from_station_id = s_from.id
+LEFT JOIN Station s_to ON r.to_station_id = s_to.id
+WHERE s_from.name = 'Томск' AND s_to.name = 'Новосибирск' AND DATE(r.sending) >= '2025-06-01'
+ORDER BY r.sending

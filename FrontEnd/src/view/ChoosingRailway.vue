@@ -79,19 +79,19 @@ watch(store.data, (newValue) => localStorage.setItem('store_data', JSON.stringif
 		<div class="size-display-1">
 			<h2>Пассажиры</h2>
 			<div class="passengers">
-				<div v-for="passenger in passengers" :key="passenger.id" class="interactive-elem passenger">
+				<div v-for="passenger in passengers" :key="passenger.id" class="interactive-elem passenger flex-center">
 					<UserIcon :style="{ backgroundColor: passenger.color }" />
 					<p>{{ passenger.name }}</p>
 					<XIcon @click="removePassenger(passenger.id)" class="remove-passenger-btn" width="24" height="24" />
 				</div>
 				<div>
-					<div @click="togglePassengerMenu" class="interactive-elem passenger" style="cursor: pointer;">
+					<div @click="togglePassengerMenu" class="interactive-elem passenger flex-center" style="cursor: pointer;">
 						<UserPlusIcon class="white-and-black" />
 						<p>Добавить пассажира</p>
 					</div>
 					<div v-if="isPassengerMenuOpen" class="passenger-dropdown">
-						<div v-for="pType in passengerTypes" :key="pType.name" @click="addPassenger(pType)" class="dropdown-item">
-							<UserIcon :style="{ backgroundColor: pType.color, borderRadius: '40%', padding: '4px' }" />
+						<div v-for="pType in passengerTypes" :key="pType.name" @click="addPassenger(pType)" class="dropdown-item flex-center">
+							<UserIcon :style="{ backgroundColor: pType.color }" class="dropdown-item-icon" />
 							<span>{{ pType.name }}</span>
 						</div>
 					</div>
@@ -114,8 +114,6 @@ watch(store.data, (newValue) => localStorage.setItem('store_data', JSON.stringif
 }
 
 .passenger {
-	display: flex;
-	align-items: center;
 	&:hover:not(:has(.remove-passenger-btn:hover)) {
 		border-color: var(--color-3-b-hover);
 		background-color: var(--color-3-a-hover);
@@ -146,8 +144,6 @@ watch(store.data, (newValue) => localStorage.setItem('store_data', JSON.stringif
 }
 
 .dropdown-item {
-	display: flex;
-	align-items: center;
 	gap: 10px;
 	padding: 10px 15px;
 	cursor: pointer;
@@ -156,12 +152,17 @@ watch(store.data, (newValue) => localStorage.setItem('store_data', JSON.stringif
 	}
 }
 
+.dropdown-item-icon {
+	border-radius: 40%;
+	padding: 4px;
+}
+
 .remove-passenger-btn {
 	margin-left: auto;
 	color: red;
 	border: 2px solid var(--color-3-b);
 	cursor: pointer;
-	transition: border-color 0.3s, background-color 0.3s;
+	transition: all 0.3s ease;
 	&:hover {
 		border-color: var(--color-3-b-hover);
 		background-color: var(--color-3-a-hover);

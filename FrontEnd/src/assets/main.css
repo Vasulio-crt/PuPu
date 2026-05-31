@@ -30,6 +30,11 @@
 	color: var(--color-4);
 }
 
+.flex-center {
+	display: flex;
+	align-items: center;
+}
+
 body {
 	color: var(--color-4);
 	min-height: 100vh;
@@ -127,6 +132,33 @@ button {
 	&:hover {
 		border-color: var(--color-3-b-hover);
 		background-color: var(--color-3-a-hover);
+	}
+}
+
+.error-row {
+	display: flex;
+	gap: 12px;
+	margin-top: 4px;
+}
+
+.error-text {
+	color: #E31B1B;
+	width: 100%;
+	min-height: 1em;
+}
+
+.already-there {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+	font-size: 18px;
+	& > a {
+		color: var(--color-2);
+		transition: all 0.4s ease;
+		&:hover {
+			color: var(--color-1);
+		}
 	}
 }
 

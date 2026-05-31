@@ -1,13 +1,22 @@
 <script setup>
-import { RouterLink, useRoute } from 'vue-router';
+import { RouterLink } from 'vue-router';
+import { useAuthStore } from '@/store/auth';
+import { useRoute } from 'vue-router'
 
+const authStore = useAuthStore()
 const route = useRoute()
 </script>
 
 <template>
 <header>
 	<RouterLink to="/" class="no-a"><h1>PuPu</h1></RouterLink>
-	<RouterLink to="/login" v-if="route.name !== 'login'" class="light-inter-elem">Вход</RouterLink>
+	<div v-if="authStore.isLoggedIn">
+		<span>{{ authStore.fullName }}</span>
+		<RouterLink @click="authStore.logout()" to="/login" class="light-inter-elem">Выйти</RouterLink>
+	</div>
+	<div v-else-if="route.path === '/login' ? false : true">
+		<RouterLink to="/login" class="light-inter-elem">Войти</RouterLink>
+	</div>
 </header>
 </template>
 
@@ -19,5 +28,10 @@ header {
 	align-items: center;
 	padding: 0.5rem 0;
 	border-bottom: 2px solid var(--color-3-b);
+}
+
+span {
+	margin-right: 8px;
+	font-weight: 500;
 }
 </style>

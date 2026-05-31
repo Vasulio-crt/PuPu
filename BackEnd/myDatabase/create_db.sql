@@ -22,13 +22,6 @@ CREATE TABLE IF NOT EXISTS Route(
 	distance SMALLINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Stations_on_route(
-	id INTEGER PRIMARY KEY,
-	route_id INTEGER NOT NULL REFERENCES Route(id),
-	station_id INTEGER NOT NULL REFERENCES Station(id),
-	arrival TEXT DEFAULT (datetime('now', '1 hour'))
-);
-
 CREATE TABLE IF NOT EXISTS Carriage(
 	id INTEGER PRIMARY KEY,
 	type VARCHAR(20) NOT NULL
@@ -42,17 +35,13 @@ CREATE TABLE IF NOT EXISTS Seat(
 );
 
 INSERT INTO Station(name) VALUES
-('Томск'), ('Тайга'), ('Юрга'), ('Болотная'), ('Новосибирск');
+('Томск'), ('Тайга'), ('Болотная'), ('Новосибирск');
 
 -- YYYY-MM-DD HH:MM:SS
 INSERT INTO Route(sending, arrival, from_station_id, to_station_id, distance) VALUES
 (datetime('2026-06-01 12:00'), datetime('2026-06-01 12:00', '3 hours'), 1, 5, 300),
 (datetime('2026-06-01 13:00'), datetime('2026-06-01 13:00', '3 hours'), 1, 5, 300),
 (datetime('2026-06-02 12:00'), datetime('2026-06-02 12:00', '3 hours'), 1, 5, 300);
-
-INSERT INTO Stations_on_route(route_id, station_id, arrival) VALUES
-(1, 2, datetime('2026-06-01 12:30')), (1, 3, datetime('2026-06-01 13:20')),
-(1, 4, datetime('2026-06-01 14:10')), (3, 2, datetime('2026-06-02 12:35'));
 
 INSERT INTO Carriage(type) VALUES ('Плацкартный'), ('СВ');
 

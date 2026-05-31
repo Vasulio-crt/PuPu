@@ -22,11 +22,11 @@ func Register(c fiber.Ctx) error {
 
 	exists, err := myDatabase.UserExists(registerUser.Login, registerUser.Email)
 	if err != nil {
-		println("Ошибка при проверке существования пользователя: %v", err)
+		log.Printf("Ошибка при проверке существования пользователя: %v", err)
 		return c.Status(500).SendString("Internal Server Error")
 	}
 	if exists {
-		return c.Status(409).SendString("User with this login or email already exists")
+		return c.Status(409).SendString("Пользователь с Логином или Почтой уже существует")
 	}
 
 	hashedPassword, err := utilities.HashPassword(registerUser.Password)
@@ -37,6 +37,27 @@ func Register(c fiber.Ctx) error {
 
 	myDatabase.AddUserDB(registerUser)
 	return c.Status(201).SendString(fmt.Sprintf("%s %s", registerUser.Name, registerUser.Surname))
+}
+
+func Login(c fiber.Ctx) error {
+	loginUser := customType.UserLogin{}
+
+	if err := c.Bind().Body(&loginUser); err != nil {
+		return c.Status(400).SendString("Bad Request")
+	}
+	loginUser.Login = strings.ToLower(loginUser.Login)
+
+	err := myDatabase.GetUserPasswordDB(&loginUser)
+	if err != nil {
+		log.Printf("Ошибка при поиске пользователя(%s): %v", loginUser.Login, err)
+		return c.Status(401).SendString("Неверный логин или пароль")
+	}
+
+	if !utilities.CheckPasswordHash(loginUser.Password, loginUser.PasswordDB) {
+		return c.Status(401).SendString("Неверный пароль или логин")
+	}
+
+	return c.Status(200).SendString(fmt.Sprintf("%s %s", loginUser.Name, loginUser.Surname))
 }
 
 // !-- Для админов --!
