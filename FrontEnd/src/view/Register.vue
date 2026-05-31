@@ -38,7 +38,6 @@ async function register() {
 				body: JSON.stringify(registration_data),
 				headers: {'Content-Type': 'application/json'}
 			})
-
 			if (response.ok) {
 				const data = await response.text()
 				const [name, surname] = data.split(' ')
@@ -114,17 +113,3 @@ async function register() {
 	</div>
 </main>
 </template>
-
-<style scoped>
-.error-row {
-	display: flex;
-	gap: 12px;
-	margin-top: 4px;
-}
-
-.error-text {
-	color: #E31B1B;
-	width: 100%;
-	min-height: 1em;
-}
-</style>

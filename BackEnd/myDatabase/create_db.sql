@@ -39,9 +39,10 @@ INSERT INTO Station(name) VALUES
 
 -- YYYY-MM-DD HH:MM:SS
 INSERT INTO Route(sending, arrival, from_station_id, to_station_id, distance) VALUES
-(datetime('2026-06-01 12:00'), datetime('2026-06-01 12:00', '3 hours'), 1, 5, 300),
-(datetime('2026-06-01 13:00'), datetime('2026-06-01 13:00', '3 hours'), 1, 5, 300),
-(datetime('2026-06-02 12:00'), datetime('2026-06-02 12:00', '3 hours'), 1, 5, 300);
+(datetime('2026-06-02 12:00'), datetime('2026-06-02 12:00', '3 hours'), 1, 4, 300),
+(datetime('2026-06-02 13:00'), datetime('2026-06-02 13:00', '3 hours'), 1, 4, 300),
+(datetime('2026-06-03 12:00'), datetime('2026-06-03 12:00', '3 hours'), 1, 4, 300),
+(datetime('2026-06-05 12:00'), datetime('2026-06-05 12:00', '3 hours'), 1, 4, 310);
 
 INSERT INTO Carriage(type) VALUES ('Плацкартный'), ('СВ');
 

@@ -31,7 +31,6 @@ async function login() {
 				body: JSON.stringify(login_data),
 				headers: {'Content-Type': 'application/json'}
 			})
-
 			if (response.ok) {
 				const data = await response.text()
 				const [name, surname] = data.split(' ')

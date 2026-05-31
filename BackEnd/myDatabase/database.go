@@ -80,10 +80,10 @@ func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
 	FROM Route r
 	LEFT JOIN Station s_from ON r.from_station_id = s_from.id
 	LEFT JOIN Station s_to ON r.to_station_id = s_to.id
-	WHERE s_from.name = ? AND s_to.name = ? AND DATE(r.sending) >= ?
+	WHERE s_from.name = ? AND s_to.name = ? AND r.sending BETWEEN DATE(?) AND DATE(?, '+3 days')
 	ORDER BY r.sending`
 
-	rows, err := DB.Query(query, from, to, date)
+	rows, err := DB.Query(query, from, to, date, date)
 	if err != nil {
 		return nil, err
 	}
