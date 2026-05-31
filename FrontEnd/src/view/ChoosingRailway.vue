@@ -167,4 +167,11 @@ watch(store.data, (newValue) => localStorage.setItem('store_data', JSON.stringif
 		background-color: var(--color-3-a-hover);
 	}
 }
+
+@media (max-width: 500px) {
+	.passengers {
+		display: flex;
+		flex-direction: column;
+	}
+}
 </style>

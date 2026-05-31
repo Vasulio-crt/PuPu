@@ -3,18 +3,15 @@ import { inject } from "vue";
 
 export const usePassengerStore = defineStore('passenger', {
 	state: () => ({
-		/**
-		 * @type {Object}
-		 * @property {string} from
-		 * @property {string} to
-		 * @property {string} date
-		 * @property {Array} passengers
-		*/
 		data: {
 			from: '',
 			to: '',
 			date: '',
 			passengers: []
+		},
+		user: {
+			Name: '',
+			Surname: ''
 		}
 	}),
 	actions: {

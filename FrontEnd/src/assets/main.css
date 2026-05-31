@@ -31,7 +31,7 @@
 }
 
 body {
-	color: white;
+	color: var(--color-4);
 	min-height: 100vh;
 	margin: 0 15rem;
 	background-color: var(--color-3);;
@@ -49,9 +49,14 @@ main {
 	border: 2px solid var(--color-3-b);
 	border-radius: 24px;
 	padding: 18px 24px;
-	color: white;
+	color: var(--color-4);
 	font-size: 18px;
 	transition: border-color 0.3s, background-color 0.3s;
+}
+
+label {
+	color: var(--color-4);
+	font-size: 20px;
 }
 
 input {
@@ -71,6 +76,17 @@ input {
 		border-color: var(--color-3-b-hover);
 		background-color: var(--color-3-a-hover);
 	}
+}
+
+.search-row-column {
+	display: flex;
+	gap: 12px;
+}
+
+.input-group {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
 }
 
 input[type="number"] {
@@ -121,16 +137,14 @@ button {
 	header {
 		padding: 0.5rem;
 	}
+	.search-row-column {
+		flex-direction: column;
+	}
 	.search-row {
 		flex-direction: column;
 	}
 	.size-display-1 {
 		width: 100%;
-	}
-	.passengers {
-		display: flex;
-		flex-direction: column;
-		
 	}
 }
 

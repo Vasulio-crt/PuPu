@@ -40,13 +40,15 @@ function register() {
 <template>
 <main>
 	<div class="size-display-1">
-		<div class="text-row">
-			<h2>Логин <span class="red-text">*</span></h2>
-			<h2>Пароль <span class="red-text">*</span></h2>
-		</div>
-		<div class="search-row">
-			<input v-model="registration_data.login" type="text" placeholder="Логин" class="interactive-elem">
-			<input v-model="registration_data.password" type="password" placeholder="Пароль" class="interactive-elem">
+		<div class="search-row-column">
+			<div class="input-group">
+				<label for="Login">Логин <span class="red-text">*</span></label>
+				<input v-model="registration_data.login" type="text" placeholder="Логин" id="Login" class="interactive-elem">
+			</div>
+			<div class="input-group">
+				<label for="Password">Пароль <span class="red-text">*</span></label>
+				<input v-model="registration_data.password" type="password" placeholder="Пароль" id="Password" class="interactive-elem">
+			</div>
 		</div>
 		<div class="error-row">
 			<p class="error-text">{{ errors.login }}</p>
@@ -54,13 +56,15 @@ function register() {
 		</div>
 	</div>
 	<div class="size-display-1">
-		<div class="text-row">
-			<h2>Email <span class="red-text">*</span></h2>
-			<h2>Имя <span class="red-text">*</span></h2>
-		</div>
-		<div class="search-row">
-			<input v-model="registration_data.email" type="text" placeholder="Email" class="interactive-elem">
-			<input v-model="registration_data.name" type="text" placeholder="Имя" class="interactive-elem">
+		<div class="search-row-column">
+			<div class="input-group">
+				<label for="Email">Email <span class="red-text">*</span></label>
+				<input v-model="registration_data.email" type="text" id="Email" placeholder="Email" class="interactive-elem">
+			</div>
+			<div class="input-group">
+				<label for="Name">Имя <span class="red-text">*</span></label>
+				<input v-model="registration_data.name" type="text" id="Name" placeholder="Имя" class="interactive-elem">
+			</div>
 		</div>
 		<div class="error-row">
 			<p class="error-text">{{ errors.email }}</p>
@@ -68,13 +72,15 @@ function register() {
 		</div>
 	</div>
 	<div class="size-display-1">
-		<div class="text-row">
-			<h2>Фамилия <span class="red-text">*</span></h2>
-			<h2>Отчество</h2>
-		</div>
-		<div class="search-row">
-			<input v-model="registration_data.surname" type="text" placeholder="Фамилия" class="interactive-elem">
-			<input v-model="registration_data.patronymic" type="text" placeholder="Отчество" class="interactive-elem">
+		<div class="search-row-column">
+			<div class="input-group">
+				<label for="Surname">Фамилия <span class="red-text">*</span></label>
+				<input v-model="registration_data.surname" type="text" id="Surname" placeholder="Фамилия" class="interactive-elem">
+			</div>
+			<div class="input-group">
+				<label for="Patronymic">Отчество</label>
+				<input v-model="registration_data.patronymic" type="text" id="Patronymic" placeholder="Отчество" class="interactive-elem">
+			</div>
 		</div>
 		<div class="error-row">
 			<p class="error-text">{{ errors.surname }}</p>
@@ -87,14 +93,6 @@ function register() {
 </template>
 
 <style scoped>
-.text-row {
-	display: flex;
-	gap: 12px;
-	& > h2 {
-		width: 100%;
-	}
-}
-
 .error-row {
 	display: flex;
 	gap: 12px;
