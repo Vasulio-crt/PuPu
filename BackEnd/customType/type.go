@@ -5,6 +5,8 @@ type User struct {
 	Login      string `json:"login"`
 	Password   string `json:"password"`
 	Email      string `json:"email"`
+	Phone      string `json:"phone"`
+	BirthDate  string `json:"birth_date"`
 	Name       string `json:"name"`
 	Surname    string `json:"surname"`
 	Patronymic string `json:"patronymic"`

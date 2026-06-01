@@ -18,6 +18,7 @@ const cities = ref([])
 const isPassengerMenuOpen = ref(false)
 const store = usePassengerStore()
 const router = useRouter()
+let today = store.getToday()
 
 let nextId = 0
 const passengerTypes = [
@@ -53,9 +54,8 @@ async function getRoute() {
 		const response = await fetch(url)
 		if (response.ok) {
 			const routes = await response.json()
-			// TODO: Сохранить маршруты в store и перейти на страницу с результатами
-			// Например: routeStore.setRoutes(routes)
-			router.push({ name: 'choosing-railway', query: { from: store.data.from, to: store.data.to } })
+			store.routes = routes
+			router.push({name: "choosing-railway"})
 		} else {
 			error.value = `Ошибка от сервера: ${await response.text()}`
 		}
@@ -66,8 +66,10 @@ async function getRoute() {
 }
 
 onMounted(() => {
-	const today = new Date();
-	store.data.date = new Date(today.getTime()).toISOString().split('T')[0];
+	if (!store.data.date || store.data.date < today) {
+		store.data.date = today
+	}
+
 	const savedPassengers = localStorage.getItem('passengers_view')
 	const savedStoreData = localStorage.getItem('store_data')
 
@@ -88,6 +90,10 @@ onMounted(() => {
 
 watch(passengers, (newValue) => localStorage.setItem('passengers_view', JSON.stringify(newValue)), {deep: true})
 watch(store.data, (newValue) => localStorage.setItem('store_data', JSON.stringify(newValue)))
+watch(() => store.data.date, (newDate) => {
+	today = store.getToday()
+	if (newDate < today) store.data.date = today
+});
 </script>
 
 <template>

@@ -49,8 +49,8 @@ func Init() {
 }
 
 func AddUserDB(user customType.User) {
-	_, err := DB.Exec("INSERT INTO users(login, password, email, name, surname, patronymic) VALUES (?, ?, ?, ?, ?, ?)",
-		user.Login, user.Password, user.Email, user.Name, user.Surname, user.Patronymic)
+	_, err := DB.Exec("INSERT INTO users(login, password, email, phone, birth_date, name, surname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		user.Login, user.Password, user.Email, user.Phone, user.BirthDate, user.Name, user.Surname, user.Patronymic)
 	if err != nil {
 		log.Fatalf("Ошибка при добавление пользователя: %v", err)
 	}
@@ -164,8 +164,8 @@ func GetAllUsers() ([]*customType.User, error) {
 	var users []*customType.User
 	for rows.Next() {
 		var user customType.User
-		err := rows.Scan(&user.ID, &user.Login, &user.Password, &user.Email,
-			&user.Name, &user.Surname, &user.Patronymic)
+		err := rows.Scan(&user.ID, &user.Login, &user.Password, &user.Email, &user.Phone,
+			&user.BirthDate, &user.Name, &user.Surname, &user.Patronymic)
 		if err != nil {
 			return nil, err
 		}
@@ -177,8 +177,8 @@ func GetAllUsers() ([]*customType.User, error) {
 
 func GetUser(id int) (customType.User, error) {
 	var user customType.User
-	err := DB.QueryRow("SELECT * FROM Users WHERE id = ?", id).Scan(&user.ID, &user.Login,
-		&user.Password, &user.Email, &user.Name, &user.Surname, &user.Patronymic)
+	err := DB.QueryRow("SELECT * FROM Users WHERE id = ?", id).Scan(&user.ID, &user.Login, &user.Password,
+		&user.Email, &user.Phone, &user.BirthDate, &user.Name, &user.Surname, &user.Patronymic)
 	if err != nil {
 		return user, err
 	}

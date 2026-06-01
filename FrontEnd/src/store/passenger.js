@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { inject } from "vue";
 
 export const usePassengerStore = defineStore('passenger', {
 	state: () => ({
@@ -9,10 +8,7 @@ export const usePassengerStore = defineStore('passenger', {
 			date: '',
 			passengers: []
 		},
-		user: {
-			Name: '',
-			Surname: ''
-		}
+		routes: []
 	}),
 	actions: {
 		deletePassenger(id) {
@@ -20,6 +16,10 @@ export const usePassengerStore = defineStore('passenger', {
 			if (index !== -1) {
 				this.data.passengers.splice(index, 1)
 			}
+		},
+		getToday() {
+			const todayString = new Date().toISOString().split('T')[0]
+			return todayString
 		}
 	}
 })
