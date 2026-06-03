@@ -46,6 +46,7 @@ function togglePassengerMenu() {
 
 async function getRoute() {
 	error.value = ''
+	router.push({name: "choosing-railway", params: {from: store.data.from, to: store.data.to, date: store.data.date}})
 	try {
 		const url = new URL(`${host}/api/getRoutes`)
 		url.searchParams.set('from', store.data.from)
@@ -55,7 +56,6 @@ async function getRoute() {
 		if (response.ok) {
 			const routes = await response.json()
 			store.routes = routes
-			router.push({name: "choosing-railway"})
 		} else {
 			error.value = `Ошибка от сервера: ${await response.text()}`
 		}

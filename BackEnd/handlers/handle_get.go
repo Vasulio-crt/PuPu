@@ -21,6 +21,10 @@ func GetRoutes(c fiber.Ctx) error {
 		log.Printf("Ошибка при получении маршрутов: %v", err)
 		return c.Status(500).SendString("Internal Server Error")
 	}
+
+	if len(routes) == 0 {
+		return c.Status(404).SendString("Маршрутов не найдено")
+	}
 	return c.JSON(routes)
 }
 

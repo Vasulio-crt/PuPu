@@ -37,14 +37,18 @@ CREATE TABLE IF NOT EXISTS Seat(
 );
 
 INSERT INTO Station(name) VALUES
-('Томск'), ('Тайга'), ('Болотная'), ('Новосибирск');
+('Томск'), ('Тайга'), ('Болотная'), ('Новосибирск'), ('Асино'), ('Белый-яр');
 
 -- YYYY-MM-DD HH:MM:SS
 INSERT INTO Route(sending, arrival, from_station_id, to_station_id, distance) VALUES
-(datetime('2026-06-02 12:00'), datetime('2026-06-02 12:00', '3 hours'), 1, 4, 300),
-(datetime('2026-06-02 13:00'), datetime('2026-06-02 13:00', '3 hours'), 1, 4, 300),
-(datetime('2026-06-03 12:00'), datetime('2026-06-03 12:00', '3 hours'), 1, 4, 300),
-(datetime('2026-06-05 12:00'), datetime('2026-06-05 12:00', '3 hours'), 1, 4, 310);
+(datetime('2026-06-04 12:00'), datetime('2026-06-04 12:00', '3 hours'), 1, 4, 266),
+(datetime('2026-06-04 13:00'), datetime('2026-06-04 13:00', '3 hours'), 1, 5, 300),
+(datetime('2026-06-04 14:00'), datetime('2026-06-04 13:00', '1 hours'), 1, 6, 100),
+(datetime('2026-06-04 16:00'), datetime('2026-06-04 16:00', '3 hours'), 4, 1, 266),
+(datetime('2026-06-04 16:00'), datetime('2026-06-04 16:00', '3 hours'), 5, 1, 300),
+(datetime('2026-06-04 16:00'), datetime('2026-06-04 16:00', '1 hours'), 6, 1, 100),
+(datetime('2026-06-05 12:00'), datetime('2026-06-05 12:00', '3 hours'), 1, 4, 266),
+(datetime('2026-06-07 12:00'), datetime('2026-06-07 12:00', '3 hours'), 1, 4, 300);
 
 INSERT INTO Carriage(type) VALUES ('Плацкартный'), ('СВ');
 
