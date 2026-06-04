@@ -12,14 +12,6 @@ type User struct {
 	Patronymic string `json:"patronymic"`
 }
 
-type UserLogin struct {
-	Login      string `json:"login"`
-	Password   string `json:"password"`
-	Name       string
-	Surname    string
-	PasswordDB string
-}
-
 type RouteDB struct {
 	Id          int    `json:"id"`
 	Sending     string `json:"sending"`

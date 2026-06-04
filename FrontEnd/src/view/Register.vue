@@ -3,10 +3,6 @@ import { inject, onMounted, reactive } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 
-defineOptions({
-	name: 'register'
-})
-
 const host = inject('hostBacked')
 const authStore = useAuthStore()
 const router = useRouter()

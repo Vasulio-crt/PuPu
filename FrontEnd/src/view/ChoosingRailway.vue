@@ -4,10 +4,6 @@ import { usePassengerStore } from '@/store/passenger';
 import { inject, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-defineOptions({
-	name: "choosing-railway"
-})
-
 const store = usePassengerStore()
 const storeAuth = useAuthStore()
 const vueRoute = useRoute()
@@ -35,8 +31,10 @@ function formationTime(date) {
 	return `${hour}:${minute}`
 }
 
-function calculatingPrice() {
-	return 10101
+function calculatingPrice(distance) {
+	// (distance * 5) Пассажир * Плацкарт
+	let result = (distance * 5) * 1 * 1
+	return result
 }
 
 async function getRoute() {
@@ -53,7 +51,6 @@ async function getRoute() {
 			const errorText = await response.text()
 			const status = response.status
 			error.value.push(status, errorText)
-			console.error('Ошибка от сервера:', errorText)
 		}
 	} catch (e) {
 		console.error('Ошибка получения маршрутов:', e)
@@ -82,7 +79,7 @@ function buyTicket(id) {
 		vueRouter.push({name: "not-registered"})
 		return
 	}
-	console.log(id, store.data.passengers)
+	vueRouter.push({name: "choosing-seats", params: {id: id}})
 }
 
 onMounted(() => {
@@ -112,7 +109,7 @@ onMounted(() => {
 					<h3>{{ route.to_station }}</h3>
 				</div>
 				<div class="display-2">
-					<span>Цена: {{ calculatingPrice() }}</span>
+					<span>Цена: {{ calculatingPrice(route.distance) }}</span>
 					<button @click="buyTicket(route.id)" class="interactive-elem">Купить</button>
 				</div>
 			</div>

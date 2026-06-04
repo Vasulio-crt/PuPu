@@ -66,13 +66,15 @@ func UserExists(login, email string) (bool, error) {
 	return exists, nil
 }
 
-func GetUserPasswordDB(loginUser *customType.UserLogin) error {
-	query := "SELECT password, name, surname FROM Users WHERE login = ?"
-	err := DB.QueryRow(query, loginUser.Login).Scan(&loginUser.PasswordDB, &loginUser.Name, &loginUser.Surname)
+func GetLoginUserDB(loginUser *customType.User) (string, error) {
+	query := "SELECT password, name, surname, email, phone, birth_date, patronymic FROM Users WHERE login = ?"
+	var passwordDB string
+	err := DB.QueryRow(query, loginUser.Login).Scan(&passwordDB, &loginUser.Name, &loginUser.Surname,
+		&loginUser.Email, &loginUser.Phone, &loginUser.BirthDate, &loginUser.Patronymic)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return passwordDB, nil
 }
 
 func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
@@ -80,7 +82,7 @@ func GetRoutesDB(from, to, date string) ([]customType.RouteDB, error) {
 	FROM Route r
 	LEFT JOIN Station s_from ON r.from_station_id = s_from.id
 	LEFT JOIN Station s_to ON r.to_station_id = s_to.id
-	WHERE s_from.name = ? AND s_to.name = ? AND r.sending BETWEEN DATE(?) AND DATE(?, '+3 days')
+	WHERE s_from.name = ? AND s_to.name = ? AND r.sending BETWEEN DATE(?) AND DATE(?, '4 days')
 	ORDER BY r.sending`
 
 	rows, err := DB.Query(query, from, to, date, date)
@@ -116,6 +118,7 @@ func GetAllStationDB() ([]string, error) {
 	return res, nil
 }
 
+// Возвращает (массив carriage_id) состав поезда по id маршрута
 func GetTrainDB(id int) ([]int, error) {
 	rows, err := DB.Query("SELECT carriage_id FROM Train_composition WHERE route_id = ?", id)
 	if err != nil {

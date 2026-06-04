@@ -7,10 +7,6 @@ import { usePassengerStore } from '@/store/passenger';
 import UserIcon from '@/components/icons/UserIcon.vue';
 import DropdownInput from '@/components/DropdownInput.vue';
 
-defineOptions({
-	name: 'home'
-})
-
 const host = inject('hostBacked')
 const passengers = ref([])
 const cities = ref([])

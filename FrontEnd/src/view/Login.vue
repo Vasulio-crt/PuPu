@@ -3,10 +3,6 @@ import { inject, reactive } from 'vue';
 import { useAuthStore } from '@/store/auth';
 import { useRouter } from 'vue-router';
 
-defineOptions({
-	name: 'login'
-})
-
 const host = inject('hostBacked')
 const authStore = useAuthStore()
 const router = useRouter()
@@ -32,9 +28,8 @@ async function login() {
 				headers: {'Content-Type': 'application/json'}
 			})
 			if (response.ok) {
-				const data = await response.text()
-				const [name, surname] = data.split(' ')
-				authStore.setAuthData(name, surname)
+				const data = await response.json()
+				authStore.setAuthData(data)
 				router.push('/')
 			} else {
 				errors.password = 'Неверный логин или пароль'
