@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"sellTrainTicket/myDatabase"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -41,4 +42,40 @@ func GetStation(c fiber.Ctx) error {
 		return c.Status(500).SendString("Internal Server Error")
 	}
 	return c.JSON(stations)
+}
+
+func GetTrain(c fiber.Ctx) error {
+	id := c.Params("id")
+	intId, err := strconv.Atoi(id)
+	if err != nil {
+		return c.Status(400).SendString("Invalid ID format")
+	}
+
+	train, err := myDatabase.GetTrainDB(intId)
+	if err != nil {
+		log.Printf("Ошибка при получении поездов: %v", err)
+		return c.Status(500).SendString("Internal Server Error")
+	}
+	if len(train) == 0 {
+		return c.Status(404).SendString("Состав поезда не найден")
+	}
+	return c.JSON(train)
+}
+
+func GetCarriage(c fiber.Ctx) error {
+	id := c.Params("id")
+	intId, err := strconv.Atoi(id)
+	if err != nil {
+		return c.Status(400).SendString("Invalid ID format")
+	}
+
+	carriage, err := myDatabase.GetCarriageSeatDB(intId)
+	if err != nil {
+		log.Printf("Ошибка при получении вагонов: %v", err)
+		return c.Status(500).SendString("Internal Server Error")
+	}
+	if len(carriage) == 0 {
+		return c.Status(404).SendString("Вагон не найден")
+	}
+	return c.JSON(carriage)
 }

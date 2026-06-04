@@ -28,3 +28,8 @@ type RouteDB struct {
 	ToStation   string `json:"to_station"`
 	Distance    int    `json:"distance"`
 }
+
+type SeatDB struct {
+	Number   int  `json:"num"`
+	Occupied bool `json:"occ"`
+}

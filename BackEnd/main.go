@@ -22,6 +22,9 @@ func main() {
 	api.Post("/login", handlers.Login)
 	api.Get("/getRoutes", handlers.GetRoutes)
 	api.Get("/getStation", handlers.GetStation)
+	api.Get("/getTrain/:id", handlers.GetTrain)
+	api.Get("/getCarriage/:id", handlers.GetCarriage)
+	// ! Админы
 	api.Post("/createRoute", handlers.CreateRoute)
 	api.Post("/createStation", handlers.CreateStation)
 	api.Get("/users", handlers.GetAllUsers)

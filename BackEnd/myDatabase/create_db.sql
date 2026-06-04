@@ -36,6 +36,12 @@ CREATE TABLE IF NOT EXISTS Seat(
 	occupied INTEGER NOT NULL DEFAULT 0 REFERENCES Users(id)
 );
 
+CREATE TABLE IF NOT EXISTS Train_composition(
+	id INTEGER PRIMARY KEY,
+	route_id INTEGER NOT NULL REFERENCES Route(id),
+	carriage_id INTEGER NOT NULL REFERENCES Carriage(id)
+);
+
 INSERT INTO Station(name) VALUES
 ('Томск'), ('Тайга'), ('Болотная'), ('Новосибирск'), ('Асино'), ('Белый-яр');
 
@@ -48,8 +54,8 @@ INSERT INTO Route(sending, arrival, from_station_id, to_station_id, distance) VA
 (datetime('2026-06-05 16:00'), datetime('2026-06-05 16:00', '3 hours'), 4, 1, 266),
 (datetime('2026-06-05 16:00'), datetime('2026-06-05 16:00', '3 hours'), 5, 1, 300),
 (datetime('2026-06-05 16:00'), datetime('2026-06-05 16:00', '1 hours'), 6, 1, 100),
-(datetime('2026-06-06 12:00'), datetime('2026-06-06 12:00', '3 hours'), 1, 4, 267),
-(datetime('2026-06-07 12:00'), datetime('2026-06-07 12:00', '3 hours'), 1, 4, 300);
+(datetime('2026-06-05 12:00', '1 day' ,'3 hours'), datetime('2026-06-05 12:00', '1 day' ,'3 hours'), 1, 4, 267),
+(datetime('2026-06-05 12:00', '2 day' ,'3 hours'), datetime('2026-06-05 12:00', '2 day' ,'3 hours'), 1, 4, 300);
 
 INSERT INTO Carriage(type) VALUES ('Плацкартный'), ('СВ');
 
@@ -68,3 +74,8 @@ INSERT INTO Seat(number, carriage_id) VALUES
 (1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2),
 (7, 2), (8, 2), (9, 2), (10, 2), (11, 2), (12, 2),
 (13, 2), (14, 2), (15, 2), (16, 2), (17, 2), (18, 2);
+
+INSERT INTO Train_composition(route_id, carriage_id) VALUES
+(1, 1), (1, 2),
+(7, 1), (7, 2),
+(8, 1), (8, 2);

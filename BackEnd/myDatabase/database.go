@@ -116,6 +116,39 @@ func GetAllStationDB() ([]string, error) {
 	return res, nil
 }
 
+func GetTrainDB(id int) ([]int, error) {
+	rows, err := DB.Query("SELECT carriage_id FROM Train_composition WHERE route_id = ?", id)
+	if err != nil {
+		return nil, err
+	}
+	var res []int
+	for rows.Next() {
+		var train_id int
+		if err := rows.Scan(&train_id); err != nil {
+			return nil, err
+		}
+		res = append(res, train_id)
+	}
+	return res, nil
+}
+
+func GetCarriageSeatDB(id int) ([]customType.SeatDB, error) {
+	query := `SELECT number, occupied FROM Seat WHERE carriage_id = ?`
+	rows, err := DB.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	var res []customType.SeatDB
+	for rows.Next() {
+		var seat customType.SeatDB
+		if err := rows.Scan(&seat.Number, &seat.Occupied); err != nil {
+			return nil, err
+		}
+		res = append(res, seat)
+	}
+	return res, nil
+}
+
 func CreateStationDB(req []string) ([]int64, error) {
 	var results_id []int64
 	for _, v := range req {
