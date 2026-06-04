@@ -21,6 +21,11 @@ const route = useRoute()
 </template>
 
 <style scoped>
+.no-a {
+	text-decoration: none;
+	color: var(--color-4);
+}
+
 header {
 	color: white;
 	display: flex;

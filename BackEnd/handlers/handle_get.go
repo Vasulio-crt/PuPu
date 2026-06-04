@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"sellTrainTicket/myDatabase"
+	"time"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -14,6 +15,11 @@ func GetRoutes(c fiber.Ctx) error {
 
 	if from == "" || to == "" || date == "" {
 		return c.Status(404).SendString("Missing required query parameters: from, to, date")
+	}
+
+	now := time.Now()
+	if date < now.Format(time.DateOnly) {
+		return c.Status(404).SendString("Дата устарела")
 	}
 
 	routes, err := myDatabase.GetRoutesDB(from, to, date)

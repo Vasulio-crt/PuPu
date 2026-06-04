@@ -13,7 +13,6 @@ defineOptions({
 
 const host = inject('hostBacked')
 const passengers = ref([])
-const error = ref('')
 const cities = ref([])
 const isPassengerMenuOpen = ref(false)
 const store = usePassengerStore()
@@ -44,25 +43,8 @@ function togglePassengerMenu() {
 	isPassengerMenuOpen.value = !isPassengerMenuOpen.value
 }
 
-async function getRoute() {
-	error.value = ''
-	router.push({name: "choosing-railway", params: {from: store.data.from, to: store.data.to, date: store.data.date}})
-	try {
-		const url = new URL(`${host}/api/getRoutes`)
-		url.searchParams.set('from', store.data.from)
-		url.searchParams.set('to', store.data.to)
-		url.searchParams.set('date', store.data.date)
-		const response = await fetch(url)
-		if (response.ok) {
-			const routes = await response.json()
-			store.routes = routes
-		} else {
-			error.value = `Ошибка от сервера: ${await response.text()}`
-		}
-	} catch (e) {
-		console.error('Ошибка получения маршрутов:', e)
-		error.value = 'Не удалось получить данные о маршрутах. Проверьте соединение с сервером.'
-	}
+function pushNewPage() {
+	router.push({name: "choosing-railway", query: {from: store.data.from, to: store.data.to, date: store.data.date}})
 }
 
 onMounted(() => {
@@ -144,8 +126,7 @@ watch(() => store.data.date, (newDate) => {
 			</div>
 		</div>
 		<div class="size-display-1">
-			<button @click="getRoute" class="interactive-elem">НАЙТИ</button>
-			<p v-if="error" class="error-text">{{ error }}</p>
+			<button @click="pushNewPage" class="interactive-elem">НАЙТИ</button>
 		</div>
 	</main>
 </template>
@@ -213,11 +194,6 @@ watch(() => store.data.date, (newDate) => {
 		border-color: var(--color-3-b-hover);
 		background-color: var(--color-3-a-hover);
 	}
-}
-
-.error-text {
-	color: #E31B1B;
-	margin-top: 8px;
 }
 
 @media (max-width: 500px) {
