@@ -15,6 +15,13 @@ export const useAuthStore = defineStore('auth', () => {
 
 
 	const fullName = computed(() => `${user.name} ${user.surname}`)
+	const userNotExits = computed(() => {
+		if (user.name === '' || user.surname === '') {
+			return true
+		} else {
+			return false
+		}
+	})
 
 	function setAuthData(userData) {
 		Object.assign(user, userData)
@@ -32,6 +39,7 @@ export const useAuthStore = defineStore('auth', () => {
 		user,
 		isLoggedIn,
 		fullName,
+		userExits: userNotExits,
 		setAuthData,
 		logout,
 	}

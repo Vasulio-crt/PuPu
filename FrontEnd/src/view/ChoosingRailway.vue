@@ -1,22 +1,31 @@
 <script setup>
+import { useAuthStore } from '@/store/auth';
 import { usePassengerStore } from '@/store/passenger';
 import { inject, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 defineOptions({
 	name: "choosing-railway"
 })
 
 const store = usePassengerStore()
-const route = useRoute()
+const storeAuth = useAuthStore()
+const vueRoute = useRoute()
+const vueRouter = useRouter()
 const error = ref([])
 const host = inject('hostBacked')
+
+function stringToDate(date) {
+	const todayString = new Date(date).toISOString().split('T')[0]
+	return todayString	
+}
 
 function dayName(date) {
 	date = new Date(date)
 	let weekday = date.toLocaleString("ru", { weekday: 'long'})
 	weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1)
-	return `${weekday} ${store.getToday()}`
+	const numDayMonth = date.toLocaleString("ru", { day: '2-digit', month: 'long' })
+	return `${weekday} - ${numDayMonth}`
 }
 
 function formationTime(date) {
@@ -33,9 +42,9 @@ function calculatingPrice() {
 async function getRoute() {
 	try {
 		const url = new URL(`${host}/api/getRoutes`)
-		url.searchParams.set('from', route.query.from)
-		url.searchParams.set('to', route.query.to)
-		url.searchParams.set('date', route.query.date)
+		url.searchParams.set('from', vueRoute.query.from)
+		url.searchParams.set('to', vueRoute.query.to)
+		url.searchParams.set('date', vueRoute.query.date)
 		const response = await fetch(url)
 		if (response.ok) {
 			const routes = await response.json()
@@ -51,6 +60,31 @@ async function getRoute() {
 	}
 }
 
+let lastDate = null
+function checkDate(route) {
+	if (lastDate === null) {
+		lastDate = stringToDate(route.sending)
+		return true
+	}
+	if (lastDate === stringToDate(route.sending)) {
+		return false
+	}
+	lastDate = stringToDate(route.sending)
+	return true
+}
+
+function buyTicket(id) {
+	if (store.data.passengers.length === 0) {
+		vueRouter.push({name: "home"})
+		return
+	}
+	if (storeAuth.userExits) {
+		vueRouter.push({name: "not-registered"})
+		return
+	}
+	console.log(id, store.data.passengers)
+}
+
 onMounted(() => {
 	getRoute()
 })
@@ -61,10 +95,10 @@ onMounted(() => {
 		<div v-if="error.length > 0" class="error-div">
 			<h2>{{ error[0] }}</h2>
 			<p class="red-text">{{ error[1] }}</p>
-			<RouterLink to="/">На главную</RouterLink>
+			<RouterLink to="/" class="a-link">На главную</RouterLink>
 		</div>
 		<div v-for="route in store.routes">
-			<h1>{{ dayName(route.sending) }}</h1>
+			<h1 v-if="checkDate(route)">{{ dayName(route.sending) }}</h1>
 			<div class="size-display-1 interactive-elem">
 				<div class="display-2">
 					<h2>{{ formationTime(route.sending) }}</h2>
@@ -79,7 +113,7 @@ onMounted(() => {
 				</div>
 				<div class="display-2">
 					<span>Цена: {{ calculatingPrice() }}</span>
-					<button class="interactive-elem">Купить</button>
+					<button @click="buyTicket(route.id)" class="interactive-elem">Купить</button>
 				</div>
 			</div>
 			
@@ -88,26 +122,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.error-div {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	border: 2px solid var(--color-3-b);
-	border-radius: 24px;
-	padding: 1rem 2rem;
-	font-size: 1.3em;
-}
-
-a {
-	margin-top: 8px;
-	text-decoration: none;
-	color: var(--color-2);
-	transition: color 0.3s ease;
-	&:hover {
-		color: var(--color-1);
-	}
-}
-
 main {
 	margin-top: 1rem;
 }
@@ -117,6 +131,7 @@ h1 {
 }
 
 .size-display-1 {
+	margin-top: 8px;
 	padding: 1rem 2rem;
 }
 

@@ -44,6 +44,26 @@ main {
 	margin-top: 2rem;
 }
 
+.error-div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 2px solid var(--color-3-b);
+	border-radius: 24px;
+	padding: 1rem 2rem;
+	font-size: 1.3em;
+}
+
+.a-link {
+	margin-top: 8px;
+	text-decoration: none;
+	color: var(--color-2);
+	transition: color 0.3s ease;
+	&:hover {
+		color: var(--color-1);
+	}
+}
+
 .interactive-elem {
 	border: 2px solid var(--color-3-b);
 	border-radius: 24px;

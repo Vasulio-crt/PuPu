@@ -21,6 +21,7 @@ type UserLogin struct {
 }
 
 type RouteDB struct {
+	Id          int    `json:"id"`
 	Sending     string `json:"sending"`
 	Arrival     string `json:"arrival"`
 	FromStation string `json:"from_station"`
