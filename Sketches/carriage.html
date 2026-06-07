@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<meta charset="utf-8">
+		<title>Carriage</title>
+		<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		.carriage {
+			display: grid;
+			grid-template-columns: repeat(9, 1fr);
+			border: 2px solid black;
+		}
+		.room {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1fr 1fr;
+			place-items: stretch center;
+			grid-template-areas: "UpR UpL" "DownR DownL";
+			border: 1px solid black;
+			& > p {
+				border: 1px solid gray;
+				padding: 1rem;
+			}
+		}
+		.i1 {
+			grid-area: DownR
+		}
+		.i2 {
+			grid-area: UpR
+		}
+		.i3 {
+			grid-area: DownL
+		}
+		.i4 {
+			grid-area: UpL
+		}
+		</style>
+	</head>
+	<body>
+		<main>
+			<div class="carriage">
+				<div class="room">
+					<p class="i1">1</p>
+					<p class="i2">2</p>
+					<p class="i3">3</p>
+					<p class="i4">4</p>
+				</div>
+				<div class="room">
+					<p class="i1">5</p>
+					<p class="i2">6</p>
+					<p class="i3">7</p>
+					<p class="i4">8</p>
+				</div>
+				<div class="room">
+					<p class="i1">9</p>
+					<p class="i2">10</p>
+					<p class="i3">11</p>
+					<p class="i4">12</p>
+				</div>
+				<div class="room">
+					<p class="i1">13</p>
+					<p class="i2">14</p>
+					<p class="i3">15</p>
+					<p class="i4">16</p>
+				</div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+		</main>
+	</body>
+</html>
