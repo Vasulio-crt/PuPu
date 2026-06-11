@@ -1,0 +1,71 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.carriage {
+	display: grid;
+	grid-template-columns: repeat(9, 1fr);
+	grid-template-rows: 2fr 1fr 1fr;
+	border: 2px solid black;
+}
+.room {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	place-items: stretch center;
+	grid-template-areas: "UpR UpL" "DownR DownL";
+	border: 1px solid black;
+	& > .i1 {
+		grid-area: DownR
+	}
+	& > .i2 {
+		grid-area: UpR
+	}
+	& > .i3 {
+		grid-area: DownL
+	}
+	& > .i4 {
+		grid-area: UpL
+	}
+}
+
+.full9 {
+	grid-column: span 9;
+}
+
+.room2 {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	place-items: stretch center;
+	border: 1px solid black;
+}
+
+.room2.SV {
+	p {
+		padding: 2.65rem 1rem;
+	}
+}
+
+p {
+	border: 1px solid gray;
+	padding: 1rem;
+	width: 100%;
+	text-align: center;
+	transition: background-color .2s ease-in;
+	cursor: cell;
+	&:hover {
+		background-color: lightgray;
+	}
+}
+
+h1 {
+	margin-top: 1rem;
+}
+
+main {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
