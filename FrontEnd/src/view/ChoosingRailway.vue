@@ -94,26 +94,27 @@ onMounted(() => {
 			<p class="red-text">{{ error[1] }}</p>
 			<RouterLink to="/" class="a-link">На главную</RouterLink>
 		</div>
-		<div v-for="route in store.routes">
-			<h1 v-if="checkDate(route)">{{ dayName(route.sending) }}</h1>
-			<div class="size-display-1 interactive-elem">
-				<div class="display-2">
-					<h2>{{ formationTime(route.sending) }}</h2>
-					<div class="route-line">
-						<p>{{ route.distance }} км</p>
+		<div class="horizontal-scroll-container">
+			<div v-for="route in store.routes">
+				<h1 v-if="checkDate(route)">{{ dayName(route.sending) }}</h1>
+				<div class="size-display-1 interactive-elem">
+					<div class="display-2">
+						<h2>{{ formationTime(route.sending) }}</h2>
+						<div class="route-line">
+							<p>{{ route.distance }} км</p>
+						</div>
+						<h2>{{ formationTime(route.arrival) }}</h2>
 					</div>
-					<h2>{{ formationTime(route.arrival) }}</h2>
-				</div>
-				<div class="display-2">
-					<h3>{{ route.from_station }}</h3>
-					<h3>{{ route.to_station }}</h3>
-				</div>
-				<div class="display-2">
-					<span>Цена: {{ calculatingPrice(route.distance) }}</span>
-					<button @click="buyTicket(route.id)" class="interactive-elem">Купить</button>
+					<div class="display-2">
+						<h3>{{ route.from_station }}</h3>
+						<h3>{{ route.to_station }}</h3>
+					</div>
+					<div class="display-2">
+						<span>Цена: {{ calculatingPrice(route.distance) }}</span>
+						<button @click="buyTicket(route.id)" class="interactive-elem">Купить</button>
+					</div>
 				</div>
 			</div>
-			
 		</div>
 	</main>
 </template>
@@ -150,9 +151,14 @@ h1 {
 	margin: 0 1rem;
 }
 
+.horizontal-scroll-container {
+	overflow-x: auto;
+	overflow-y: hidden;
+	max-width: 100vw;
+}
+
 button {
 	width: 12rem;
-	border: 2px solid var(--color-3-b);
 	border-radius: 1rem;
 	padding: 0.8rem;
 	color: var(--color-4);
@@ -161,7 +167,7 @@ button {
 }
 
 span {
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: bold;
 	border: 2px solid var(--color-3-b);
 	border-radius: 1rem;

@@ -1,0 +1,61 @@
+.carriage {
+	--color-wall: #4b4b4b;
+	display: grid;
+	grid-template-columns: repeat(9, 1fr);
+	grid-template-rows: 2fr 1fr 1fr;
+	border: 6px solid var(--color-wall);
+	border-radius: 6px;
+}
+
+.room {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	place-items: stretch center;
+	grid-template-areas: "UpR UpL" "DownR DownL";
+	border: 0 solid var(--color-wall);
+	border-left-width: 2px;
+	border-right-width: 2px;
+	& > .i1 {
+		grid-area: DownR;
+		border-right: 1px solid var(--color-4);
+	}
+	& > .i2 {
+		grid-area: UpR;
+		border-right: 1px solid var(--color-4);
+	}
+	& > .i3 {
+		grid-area: DownL;
+		border-left: 1px solid var(--color-4);
+	}
+	& > .i4 {
+		grid-area: UpL;
+		border-left: 1px solid var(--color-4);
+	}
+}
+
+.full9 {
+	grid-column: span 9;
+}
+
+.room2 {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	place-items: stretch center;
+	border: 0 solid var(--color-wall);
+	border-left-width: 2px;
+	border-right-width: 2px;
+}
+
+.room2.SV {
+	button {
+		padding: 2.65rem 1rem;
+	}
+}
+
+button {
+	padding: 1rem;
+	width: 100%;
+	text-align: center;
+	transition: background-color .2s ease-in;
+}

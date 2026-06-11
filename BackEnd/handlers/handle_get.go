@@ -69,13 +69,14 @@ func GetCarriage(c fiber.Ctx) error {
 		return c.Status(400).SendString("Invalid ID format")
 	}
 
-	carriage, err := myDatabase.GetCarriageSeatDB(intId)
+	seats, err := myDatabase.GetCarriageSeatDB(intId)
 	if err != nil {
 		log.Printf("Ошибка при получении вагонов: %v", err)
 		return c.Status(500).SendString("Internal Server Error")
 	}
-	if len(carriage) == 0 {
+	if len(seats) == 0 {
 		return c.Status(404).SendString("Вагон не найден")
 	}
-	return c.JSON(carriage)
+
+	return c.JSON(seats)
 }
