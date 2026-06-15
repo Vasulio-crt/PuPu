@@ -2,15 +2,23 @@
 import KupeCarriage from '@/components/KupeCarriage.vue';
 import PlatskartCarriage from '@/components/PlatskartCarriage.vue';
 import SVCarriage from '@/components/SVCarriage.vue';
-import { inject, onMounted, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/store/auth';
+import { usePassengerStore } from '@/store/passenger';
+import { computed, inject, onMounted, reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const vueRoute = useRoute()
+const store = usePassengerStore()
+const storeAuth = useAuthStore()
+const vueRouter = useRouter()
 const host = inject('hostBacked')
 const error = ref([])
-const currentCarriage = reactive({ seats: [], type: '' })
+const currentCarriage = reactive({ seats: [], type: '', id: null })
 const carriages = ref([])
 
+const passengerCount = computed(() => store.data.passengers.length)
+const selectedCount = computed(() => store.selectedSeats.length)
+const remainingSeats = computed(() => passengerCount.value - selectedCount.value)
 
 async function getCarriage(id) {
 	try {
@@ -19,6 +27,8 @@ async function getCarriage(id) {
 			const seats = await response.json()
 			currentCarriage.seats = seats
 			currentCarriage.type = getCarriageType(seats.length)
+			currentCarriage.id = id
+			store.clearSelectedSeats()
 		} else {
 			console.log("No ok getSeats")
 		}
@@ -58,7 +68,22 @@ async function getTrain() {
 	}
 }
 
+function confirmSelection() {
+	if (selectedCount.value === passengerCount.value) {
+		console.log('Выбранные места:', store.selectedSeats)
+		// vueRouter.push({ name: 'confirmation' })
+	}
+}
+
 onMounted(() => {
+	if (store.data.passengers.length === 0) {
+		vueRouter.push({name: "home"})
+		return
+	}
+	if (storeAuth.userExits) {
+		vueRouter.push({name: "not-registered"})
+		return
+	}
 	getTrain()
 })
 </script>
@@ -74,7 +99,13 @@ onMounted(() => {
 			<div>
 				<h1>Выбор вагонов</h1>
 				<div class="interactive-elem carriages">
-					<button v-for="carriage in carriages" :key="carriage" @click="getCarriage(carriage)">Вагон {{ carriage }}</button>
+					<button v-for="carriage in carriages" :key="carriage" @click="getCarriage(carriage)" :class="{active: currentCarriage.id === carriage}">Вагон {{ carriage }}</button>
+				</div>
+				<div class="interactive-elem">
+					<p>Количество пассажиров: <strong>{{ passengerCount }}</strong></p>
+					<p>Выбрано мест: <strong>{{ selectedCount }}</strong></p>
+					<p v-if="remainingSeats > 0" style="color: #ff9800;">Осталось выбрать: <strong>{{ remainingSeats }}</strong></p>
+					<strong v-else style="color: green;">Все места выбраны</strong>
 				</div>
 			</div>
 			<div class="div-carriage">
@@ -82,6 +113,10 @@ onMounted(() => {
 				<PlatskartCarriage v-if="currentCarriage.type === 'Плацкарт'" :seats="currentCarriage.seats"/>
 				<KupeCarriage v-else-if="currentCarriage.type === 'Купе'" :seats="currentCarriage.seats"/>
 				<SVCarriage v-else-if="currentCarriage.type === 'СВ'" :seats="currentCarriage.seats"/>
+			</div>
+			<div class="button-row">
+				<button @click="store.clearSelectedSeats()" :disabled="selectedCount === 0">Очистить выбор</button>
+				<button @click="confirmSelection" :disabled="selectedCount !== passengerCount">Подтвердить выбор</button>
 			</div>
 		</div>
 	</main>
@@ -99,6 +134,25 @@ onMounted(() => {
 		border-radius: 1rem;
 		padding: 1rem 0.5rem;
 		transition: background-color 0.3s;
+	}
+}
+
+.carriages button.active {
+	background: var(--color-2);
+}
+
+.button-row {
+	display: flex;
+	margin-top: 1rem;
+	& button {
+		padding: 1rem;
+		border-radius: 1rem;
+		font-size: 18px;
+		transition: background-color 0.3s ease-in;
+		&:nth-child(1) {
+			margin-right: 8px;
+			background-color: brown;
+		}
 	}
 }
 

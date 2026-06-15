@@ -118,7 +118,7 @@ button {
 	background-color: var(--color-1);
 	cursor: pointer;
 	font-weight: bold;
-	&:hover {
+	&:not(:disabled):hover {
 		background-color: var(--color-2);
 	}
 }

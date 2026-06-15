@@ -59,3 +59,12 @@ button {
 	text-align: center;
 	transition: background-color .2s ease-in;
 }
+
+button.selected {
+	background-color: var(--color-2);
+}
+
+button:disabled {
+	background-color: gray;
+	cursor: not-allowed;
+}

@@ -6,8 +6,9 @@ import { useRoute, useRouter } from 'vue-router';
 
 const store = usePassengerStore()
 const storeAuth = useAuthStore()
-const vueRoute = useRoute()
 const vueRouter = useRouter()
+const vueRoute = useRoute()
+const routes = ref([])
 const error = ref([])
 const host = inject('hostBacked')
 
@@ -32,8 +33,8 @@ function formationTime(date) {
 }
 
 function calculatingPrice(distance) {
-	// (distance * 5) Пассажир * Плацкарт
-	let result = (distance * 5) * 1 * 1
+	// (distance * 5) * Пассажир 
+	let result = (distance * 5) * 1
 	return result
 }
 
@@ -45,8 +46,7 @@ async function getRoute() {
 		url.searchParams.set('date', vueRoute.query.date)
 		const response = await fetch(url)
 		if (response.ok) {
-			const routes = await response.json()
-			store.routes = routes
+			routes.value = await response.json()
 		} else {
 			const errorText = await response.text()
 			const status = response.status
@@ -70,7 +70,7 @@ function checkDate(route) {
 	return true
 }
 
-function buyTicket(id) {
+function buyTicket(route) {
 	if (store.data.passengers.length === 0) {
 		vueRouter.push({name: "home"})
 		return
@@ -79,7 +79,8 @@ function buyTicket(id) {
 		vueRouter.push({name: "not-registered"})
 		return
 	}
-	vueRouter.push({name: "choosing-seats", params: {id: id}})
+	store.route = route
+	vueRouter.push({name: "choosing-seats", params: {id: route.id}})
 }
 
 onMounted(() => {
@@ -95,7 +96,7 @@ onMounted(() => {
 			<RouterLink to="/" class="a-link">На главную</RouterLink>
 		</div>
 		<div class="horizontal-scroll-container">
-			<div v-for="route in store.routes">
+			<div v-for="route in routes">
 				<h1 v-if="checkDate(route)">{{ dayName(route.sending) }}</h1>
 				<div class="size-display-1 interactive-elem">
 					<div class="display-2">
@@ -111,7 +112,7 @@ onMounted(() => {
 					</div>
 					<div class="display-2">
 						<span>Цена: {{ calculatingPrice(route.distance) }}</span>
-						<button @click="buyTicket(route.id)" class="interactive-elem">Купить</button>
+						<button @click="buyTicket(route)" class="interactive-elem">Купить</button>
 					</div>
 				</div>
 			</div>

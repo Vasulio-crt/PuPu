@@ -1,4 +1,5 @@
 <script setup>
+import { usePassengerStore } from '@/store/passenger'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -8,6 +9,8 @@ const props = defineProps({
 		default: () => []
 	}
 })
+
+const store = usePassengerStore()
 
 const mainRooms = computed(() => {
 	const rooms = []
@@ -32,22 +35,36 @@ const sideRooms = computed(() => {
 	}
 	return rooms
 })
+
+function toggleSeat(seat) {
+	if (!seat || seat.occ) return
+	
+	if (store.isSeatSelected(seat.num)) {
+		store.deselectSeat(seat.num)
+	} else {
+		if (store.canSelectMoreSeats) {
+			store.selectSeat(seat)
+		}
+	}
+}
+
+function isSeatSelected(seat) {
+	return seat && store.isSeatSelected(seat.num)
+}
 </script>
 
 <template>
 	<div class="carriage">
 		<div class="room" v-for="chunk in mainRooms">
-			<button class="i1" :disabled="chunk[0]?.occ">{{ chunk[0]?.num }}</button>
-			<button class="i2" :disabled="chunk[1]?.occ">{{ chunk[1]?.num }}</button>
-			<button class="i3" :disabled="chunk[2]?.occ">{{ chunk[2]?.num }}</button>
-			<button class="i4" :disabled="chunk[3]?.occ">{{ chunk[3]?.num }}</button>
+			<button class="i1" :disabled="chunk[0]?.occ" @click="toggleSeat(chunk[0])" :class="{selected: isSeatSelected(chunk[0])}">{{ chunk[0]?.num }}</button>
+			<button class="i2" :disabled="chunk[1]?.occ" @click="toggleSeat(chunk[1])" :class="{selected: isSeatSelected(chunk[1])}">{{ chunk[1]?.num }}</button>
+			<button class="i3" :disabled="chunk[2]?.occ" @click="toggleSeat(chunk[2])" :class="{selected: isSeatSelected(chunk[2])}">{{ chunk[2]?.num }}</button>
+			<button class="i4" :disabled="chunk[3]?.occ" @click="toggleSeat(chunk[3])" :class="{selected: isSeatSelected(chunk[3])}">{{ chunk[3]?.num }}</button>
 		</div>
-		
 		<div class="full9"></div>
-		
 		<div class="room2" v-for="chunk in sideRooms">
-			<button :disabled="chunk[0]?.occ">{{ chunk[0]?.num }}</button>
-			<button :disabled="chunk[1]?.occ">{{ chunk[1]?.num }}</button>
+			<button :disabled="chunk[0]?.occ" @click="toggleSeat(chunk[0])" :class="{selected: isSeatSelected(chunk[0])}">{{ chunk[0]?.num }}</button>
+			<button :disabled="chunk[1]?.occ" @click="toggleSeat(chunk[1])" :class="{selected: isSeatSelected(chunk[1])}">{{ chunk[1]?.num }}</button>
 		</div>
 	</div>
 </template>
