@@ -66,6 +66,14 @@ func UserExists(login, email string) (bool, error) {
 	return exists, nil
 }
 
+func getUserID(login string) int {
+	var id int
+	if err := DB.QueryRow("SELECT id FROM Users WHERE login = ?", login).Scan(&id); err != nil {
+		return 0
+	}
+	return id
+}
+
 func GetLoginUserDB(loginUser *customType.User) (string, error) {
 	query := "SELECT password, name, surname, email, phone, birth_date, patronymic FROM Users WHERE login = ?"
 	var passwordDB string
@@ -136,7 +144,7 @@ func GetTrainDB(id int) ([]int, error) {
 }
 
 func GetCarriageSeatDB(id int) ([]customType.SeatDB, error) {
-	query := `SELECT number, occupied FROM Seat WHERE carriage_id = ?`
+	query := `SELECT number, CASE WHEN occupied >= 1 THEN 1 ELSE 0 END FROM Seat WHERE carriage_id = ?`
 	rows, err := DB.Query(query, id)
 	if err != nil {
 		return nil, err
@@ -152,6 +160,39 @@ func GetCarriageSeatDB(id int) ([]customType.SeatDB, error) {
 	return res, nil
 }
 
+// Возвращает true если все места свободны
+func CheckingSeatsDB(seats map[int][]int) (bool, error) {
+	for key, carriage := range seats {
+		for _, seat := range carriage {
+			var occupied bool
+			if err := DB.QueryRow("SELECT occupied FROM Seat WHERE number = ? AND carriage_id = ?", seat, key).Scan(&occupied); err != nil {
+				return false, err
+			}
+			if occupied {
+				return false, nil
+			}
+		}
+	}
+	return true, nil
+}
+
+func BookingSeatsDB(login string, seats map[int][]int) error {
+	id_user := getUserID(login)
+	if id_user == 0 {
+		return errors.New("User not found")
+	}
+	for key, carriage := range seats {
+		for _, seat := range carriage {
+			_, err := DB.Exec("UPDATE Seat SET occupied = ? WHERE number = ? AND carriage_id = ?", id_user, seat, key)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// !-- Для админов --!
 func CreateStationDB(req []string) ([]int64, error) {
 	var results_id []int64
 	for _, v := range req {
@@ -189,7 +230,6 @@ func CreateRouteDB(req customType.RouteDB) error {
 	return nil
 }
 
-// !-- Для админов --!
 func GetAllUsers() ([]*customType.User, error) {
 	rows, err := DB.Query("SELECT * FROM Users")
 	if err != nil {

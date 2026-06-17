@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"sellTrainTicket/customType"
 	"sellTrainTicket/myDatabase"
@@ -34,8 +33,9 @@ func Register(c fiber.Ctx) error {
 		return c.Status(500).SendString("Error hashing password")
 	}
 	myDatabase.AddUserDB(registerUser)
+	registerUser.Password = ""
 
-	return c.Status(201).SendString(fmt.Sprintf("%s %s", registerUser.Name, registerUser.Surname))
+	return c.Status(201).JSON(registerUser)
 }
 
 func Login(c fiber.Ctx) error {
@@ -55,6 +55,7 @@ func Login(c fiber.Ctx) error {
 	if !utilities.CheckPasswordHash(loginUser.Password, passwordDB) {
 		return c.Status(401).SendString("Неверный пароль или логин")
 	}
+	loginUser.Password = ""
 
 	return c.JSON(loginUser)
 }

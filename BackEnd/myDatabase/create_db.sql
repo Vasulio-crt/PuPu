@@ -47,15 +47,15 @@ INSERT INTO Station(name) VALUES
 
 -- YYYY-MM-DD HH:MM:SS
 INSERT INTO Route(sending, arrival, from_station_id, to_station_id, distance) VALUES
-(datetime('2026-06-16 12:00'), datetime('2026-06-16 12:00', '3 hours'), 1, 4, 266),
-(datetime('2026-06-16 14:00'), datetime('2026-06-16 14:00', '3 hours'), 1, 4, 266),
-(datetime('2026-06-16 13:00'), datetime('2026-06-16 13:00', '3 hours'), 1, 5, 300),
-(datetime('2026-06-16 14:00'), datetime('2026-06-16 13:00', '1 hours'), 1, 6, 100),
-(datetime('2026-06-16 16:00'), datetime('2026-06-16 16:00', '3 hours'), 4, 1, 266),
-(datetime('2026-06-16 16:00'), datetime('2026-06-16 16:00', '3 hours'), 5, 1, 300),
-(datetime('2026-06-16 16:00'), datetime('2026-06-16 16:00', '1 hours'), 6, 1, 100),
-(datetime('2026-06-16 12:00', '1 day' ,'3 hours'), datetime('2026-06-16 12:00', '1 day' ,'3 hours'), 1, 4, 267),
-(datetime('2026-06-16 12:00', '2 day' ,'3 hours'), datetime('2026-06-16 12:00', '2 day' ,'3 hours'), 1, 4, 300);
+(datetime('2026-06-18 12:00'), datetime('2026-06-18 12:00', '3 hours'), 1, 4, 266),
+(datetime('2026-06-18 14:00'), datetime('2026-06-18 14:00', '3 hours'), 1, 4, 266),
+(datetime('2026-06-18 13:00'), datetime('2026-06-18 13:00', '3 hours'), 1, 5, 300),
+(datetime('2026-06-18 14:00'), datetime('2026-06-18 13:00', '1 hours'), 1, 6, 100),
+(datetime('2026-06-18 16:00'), datetime('2026-06-18 16:00', '3 hours'), 4, 1, 266),
+(datetime('2026-06-18 16:00'), datetime('2026-06-18 16:00', '3 hours'), 5, 1, 300),
+(datetime('2026-06-18 16:00'), datetime('2026-06-18 16:00', '1 hours'), 6, 1, 100),
+(datetime('2026-06-18 12:00', '1 day' ,'3 hours'), datetime('2026-06-18 12:00', '1 day' ,'3 hours'), 1, 4, 267),
+(datetime('2026-06-18 12:00', '2 day' ,'3 hours'), datetime('2026-06-18 12:00', '2 day' ,'3 hours'), 1, 4, 300);
 
 INSERT INTO Carriage(type) VALUES ('Плацкартный'), ('Купе'), ('СВ');
 

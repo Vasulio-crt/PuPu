@@ -40,7 +40,8 @@ async function register() {
 				headers: {'Content-Type': 'application/json'}
 			})
 			if (response.ok) {
-				authStore.setAuthData(registration_data)
+				const res_data = await response.json()
+				authStore.setAuthData(res_data)
 				router.push('/')
 			} else {
 				const errorText = await response.text()

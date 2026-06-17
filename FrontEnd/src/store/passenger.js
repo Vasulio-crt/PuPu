@@ -46,6 +46,9 @@ export const usePassengerStore = defineStore('passenger', {
 		},
 		remainingSeatsToSelect: (state) => {
 			return state.data.passengers.length - state.selectedSeats.length
+		},
+		getSelectedSeats: (state) => {
+			return state.selectedSeats.map(item => item.num)
 		}
 	}
 })

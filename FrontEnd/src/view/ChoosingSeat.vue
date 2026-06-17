@@ -68,10 +68,43 @@ async function getTrain() {
 	}
 }
 
-function confirmSelection() {
+async function bookingSeats(req_data) {
+	try {
+		const response = await fetch(`${host}/api/bookingSeats`, {
+			method: 'POST', body: JSON.stringify(req_data),
+			headers: {'Login': storeAuth.user.login, 'Content-Type': 'application/json'}, 
+		})
+		if (response.ok) {
+			vueRouter.push({ name: 'adding-passengers' })
+		} else if (response.status === 404) {
+			storeAuth.logout()
+			vueRouter.push({name: "not-registered"})
+		}
+	} catch (e) {
+		console.error('Ошибка:', e)
+	}
+}
+
+async function confirmSelection() {
 	if (selectedCount.value === passengerCount.value) {
-		console.log('Выбранные места:', store.selectedSeats)
-		// vueRouter.push({ name: 'confirmation' })
+		const req_data = {
+			[currentCarriage.id]: store.getSelectedSeats
+		}
+		try {
+			const response = await fetch(`${host}/api/checkingSeats`, {
+				method: 'POST', body: JSON.stringify(req_data),
+				headers: {'Content-Type': 'application/json'}
+			})
+			if (response.ok) {
+				bookingSeats(req_data)
+			} else {
+				const errorText = await response.text()
+				const status = response.status
+				error.value.push(status, errorText)
+			}
+		} catch (e) {
+			console.error('Ошибка:', e)
+		}
 	}
 }
 

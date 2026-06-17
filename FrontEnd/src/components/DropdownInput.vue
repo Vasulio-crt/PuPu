@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 
-//! Этот компонент был полностью написан ИИ.
-
 const props = defineProps({
 	modelValue: {
 		type: String,

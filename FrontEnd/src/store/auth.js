@@ -25,7 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
 
 	function setAuthData(userData) {
 		Object.assign(user, userData)
-		localStorage.setItem('user', JSON.stringify(user))
+		localStorage.setItem('user', JSON.stringify(userData))
 		isLoggedIn.value = true
 	}
 
