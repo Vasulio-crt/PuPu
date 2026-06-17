@@ -42,6 +42,23 @@ CREATE TABLE IF NOT EXISTS Train_composition(
 	carriage_id INTEGER NOT NULL REFERENCES Carriage(id)
 );
 
+CREATE TABLE IF NOT EXISTS Ticket(
+	id INTEGER PRIMARY KEY,
+	route_id INTEGER NOT NULL REFERENCES Route(id),
+	user_id INTEGER NOT NULL REFERENCES Users(id),
+	seat_id INTEGER NOT NULL REFERENCES Seat(id),
+	price INTEGER,
+	passenger_type VARCHAR(20),
+	name VARCHAR(50) NOT NULL,
+	surname VARCHAR(60) NOT NULL,
+	patronymic VARCHAR(60),
+	birth_date TEXT NOT NULL,
+	pass_series SMALLINT NOT NULL,
+	pass_number INTEGER NOT NULL,
+	purchase_date TEXT DEFAULT (datetime('now')),
+    status VARCHAR(9) DEFAULT 'active' CHECK(status IN ('active', 'cancelled', 'completed'))
+);
+
 INSERT INTO Station(name) VALUES
 ('Томск'), ('Тайга'), ('Болотная'), ('Новосибирск'), ('Асино'), ('Белый-яр');
 

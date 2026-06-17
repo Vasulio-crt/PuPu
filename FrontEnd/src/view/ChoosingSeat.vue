@@ -75,6 +75,7 @@ async function bookingSeats(req_data) {
 			headers: {'Login': storeAuth.user.login, 'Content-Type': 'application/json'}, 
 		})
 		if (response.ok) {
+			store.carriageID = currentCarriage.id
 			vueRouter.push({ name: 'adding-passengers' })
 		} else if (response.status === 404) {
 			storeAuth.logout()

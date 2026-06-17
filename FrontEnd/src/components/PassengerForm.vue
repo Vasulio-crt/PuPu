@@ -40,8 +40,8 @@ const updateField = (field, value) => {
 					<label>Фамилия <span class="red-text">*</span></label>
 					<input
 						type="text"
-						:value="passengerData.lastName"
-						@input="updateField('lastName', $event.target.value)"
+						:value="passengerData.surname"
+						@input="updateField('surname', $event.target.value)"
 						placeholder="Иванов"
 						required
 						class="interactive-elem"
@@ -51,8 +51,8 @@ const updateField = (field, value) => {
 					<label>Имя <span class="red-text">*</span></label>
 					<input
 						type="text"
-						:value="passengerData.firstName"
-						@input="updateField('firstName', $event.target.value)"
+						:value="passengerData.name"
+						@input="updateField('name', $event.target.value)"
 						placeholder="Иван"
 						required
 						class="interactive-elem"
@@ -65,8 +65,8 @@ const updateField = (field, value) => {
 					<label>Отчество</label>
 					<input 
 						type="text" 
-						:value="passengerData.middleName"
-						@input="updateField('middleName', $event.target.value)"
+						:value="passengerData.patronymic"
+						@input="updateField('patronymic', $event.target.value)"
 						placeholder="Иванович"
 						class="interactive-elem"
 					>

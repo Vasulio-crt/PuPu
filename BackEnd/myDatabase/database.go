@@ -192,6 +192,99 @@ func BookingSeatsDB(login string, seats map[int][]int) error {
 	return nil
 }
 
+func BuyTicketDB(login string, passengerData *[]customType.Ticket) error {
+	id_user := getUserID(login)
+	if id_user == 0 {
+		return errors.New("User not found")
+	}
+	query := `INSERT INTO Ticket(route_id, user_id, seat_id, price, passenger_type, name, surname, patronymic, birth_date, pass_series, pass_number)
+	VALUES (?, ?, (SELECT id FROM Seat WHERE number = ? AND carriage_id = ?), ?, ?, ?, ?, ?, ?, ?, ?)`
+	for _, passenger := range *passengerData {
+		_, err := DB.Exec(query, passenger.RouteId, id_user, passenger.SeatNumber, passenger.CarriageId, passenger.Price, passenger.PassengerType,
+			passenger.Name, passenger.Surname, passenger.Patronymic, passenger.BirthDate, passenger.PassSeries, passenger.PassNumber)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func GetTicketDB(login string) ([]map[string]interface{}, error) {
+	id_user := getUserID(login)
+	if id_user == 0 {
+		return nil, errors.New("User not found")
+	}
+	query := `SELECT 
+		t.id AS ticket_id, r.sending, r.arrival,
+		dep.name AS name_station_from, arr.name AS name_station_to,
+		s.carriage_id, s.number AS seat_number,
+		t.price, t.passenger_type,
+		t.name, t.surname, t.patronymic, t.birth_date,
+		t.pass_series, t.pass_number
+	FROM Ticket t
+	JOIN Route r ON t.route_id = r.id
+	JOIN Station dep ON r.from_station_id = dep.id
+	JOIN Station arr ON r.to_station_id = arr.id
+	JOIN Seat s ON t.seat_id = s.id
+	WHERE t.user_id = ?`
+	rows, err := DB.Query(query, id_user)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var res []map[string]interface{}
+	for rows.Next() {
+		var (
+			ticketID      int
+			sending       string
+			arrival       string
+			stationFrom   string
+			stationTo     string
+			carriageID    int
+			seatNumber    int
+			price         int
+			passengerType string
+			name          string
+			surname       string
+			patronymic    string
+			birthDate     string
+			passSeries    int16
+			passNumber    int
+		)
+		err := rows.Scan(
+			&ticketID, &sending, &arrival,
+			&stationFrom, &stationTo,
+			&carriageID, &seatNumber,
+			&price, &passengerType,
+			&name, &surname, &patronymic, &birthDate,
+			&passSeries, &passNumber,
+		)
+		if err != nil {
+			return nil, err
+		}
+		ticket := map[string]interface{}{
+			"ticket_id":      ticketID,
+			"sending":        sending,
+			"arrival":        arrival,
+			"station_from":   stationFrom,
+			"station_to":     stationTo,
+			"carriage_id":    carriageID,
+			"seat_number":    seatNumber,
+			"price":          price,
+			"passenger_type": passengerType,
+			"name":           name,
+			"surname":        surname,
+			"patronymic":     patronymic,
+			"birth_date":     birthDate,
+			"pass_series":    passSeries,
+			"pass_number":    passNumber,
+		}
+		res = append(res, ticket)
+	}
+
+	return res, nil
+}
+
 // !-- Для админов --!
 func CreateStationDB(req []string) ([]int64, error) {
 	var results_id []int64

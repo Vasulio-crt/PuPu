@@ -9,6 +9,7 @@ export const usePassengerStore = defineStore('passenger', {
 			passengers: []
 		},
 		route: {},
+		carriageID: null,
 		selectedSeats: []
 	}),
 	actions: {

@@ -63,3 +63,22 @@ func BookingSeats(c fiber.Ctx) error {
 
 	return c.Status(200).SendString("OK")
 }
+
+func BuyTicket(c fiber.Ctx) error {
+	var passenger []customType.Ticket
+	c.Bind().Body(&passenger)
+	login := c.Get("Login", "")
+	if login == "" {
+		c.Status(404).SendString("Нет логина")
+	}
+	if len(passenger) == 0 {
+		return c.Status(400).SendString("Отсутствуют данные пассажиров")
+	}
+	if err := myDatabase.BuyTicketDB(login, &passenger); err != nil {
+		if err.Error() == "User not found" {
+			return c.Status(404).SendString(err.Error())
+		}
+		return c.Status(500).SendString(err.Error())
+	}
+	return c.Status(200).SendString("OK")
+}

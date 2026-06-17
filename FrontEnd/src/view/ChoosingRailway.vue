@@ -79,6 +79,7 @@ function buyTicket(route) {
 		vueRouter.push({name: "not-registered"})
 		return
 	}
+	route.price = calculatingPrice(route.distance)
 	store.route = route
 	vueRouter.push({name: "choosing-seats", params: {id: route.id}})
 }
@@ -112,7 +113,7 @@ onMounted(() => {
 					</div>
 					<div class="display-2">
 						<span>Цена: {{ calculatingPrice(route.distance) }}</span>
-						<button @click="buyTicket(route)" class="interactive-elem">Купить</button>
+						<button @click="buyTicket(route)" class="interactive-elem">Выбрать</button>
 					</div>
 				</div>
 			</div>

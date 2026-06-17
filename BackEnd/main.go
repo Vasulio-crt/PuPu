@@ -26,6 +26,9 @@ func main() {
 	api.Get("/getCarriage/:id", handlers.GetCarriage)
 	api.Post("/checkingSeats", handlers.CheckingSeats)
 	api.Post("/bookingSeats", handlers.BookingSeats)
+	api.Post("/buyTicket", handlers.BuyTicket)
+	api.Get("/getTicket", handlers.GetTicket)
+
 	// ! Админы
 	api.Post("/createRoute", handlers.CreateRoute)
 	api.Post("/createStation", handlers.CreateStation)

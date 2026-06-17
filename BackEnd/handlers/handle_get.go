@@ -80,3 +80,18 @@ func GetCarriage(c fiber.Ctx) error {
 
 	return c.JSON(seats)
 }
+
+func GetTicket(c fiber.Ctx) error {
+	login := c.Get("Login", "")
+	if login == "" {
+		c.Status(404).SendString("Нет логина")
+	}
+	tickets, err := myDatabase.GetTicketDB(login)
+	if err != nil {
+		if err.Error() == "User not found" {
+			return c.Status(404).SendString(err.Error())
+		}
+		return c.Status(500).SendString(err.Error())
+	}
+	return c.JSON(tickets)
+}

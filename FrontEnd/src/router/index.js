@@ -34,9 +34,14 @@ const router = createRouter({
 			component: () => import('../view/notRegistered.vue'),
 		},
 		{
-			path: '/adding-passengers',
+			path: '/addingPassengers',
 			name: 'adding-passengers',
 			component: () => import('../view/AddingPassengers.vue'),
+		},
+		{
+			path: '/showTickets',
+			name: 'show-tickets',
+			component: () => import('../view/ShowTickets.vue'),
 		}
 	],
 })

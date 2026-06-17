@@ -1,11 +1,14 @@
 <script setup>
 import { usePassengerStore } from '@/store/passenger';
-import { ref, computed, onMounted } from 'vue';
+import { useAuthStore } from '@/store/auth';
+import { ref, computed, onMounted, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import PassengerForm from '@/components/PassengerForm.vue';
 
+const host = inject('hostBacked')
 const store = usePassengerStore()
-const router = useRouter()
+const storeAuth = useAuthStore()
+const vueRouter = useRouter()
 
 const passengersData = ref([])
 
@@ -14,9 +17,9 @@ const initializePassengersData = () => {
 		passengerId: passenger.id,
 		passengerType: passenger.name,
 		seatNumber: store.selectedSeats[index]?.num || null,
-		lastName: '',
-		firstName: '',
-		middleName: '',
+		surname: '',
+		name: '',
+		patronymic: '',
 		birthDate: '',
 		passportSeries: '',
 		passportNumber: ''
@@ -36,23 +39,47 @@ const getPassengerData = (passengerId) => {
 
 const isFormValid = computed(() => {
 	return passengersData.value.every(p => 
-		p.lastName.trim() && 
-		p.firstName.trim() && 
+		p.surname.trim() && 
+		p.name.trim() && 
 		p.birthDate && 
 		p.passportSeries.trim() && 
 		p.passportNumber.trim()
 	)
 })
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
 	if (isFormValid.value) {
 		console.log('Данные пассажиров:', passengersData.value)
-		
-		// Здесь можно отправить данные на сервер
-		// await sendPassengerData(passengersData.value)
-		
-		// Переход на следующую страницу
-		//router.push({ name: 'confirmation' })
+		const req_data = []
+		for (const passenger of passengersData.value) {
+			req_data.push({
+				route_id: store.route.id,
+				price: store.route.price,
+				passenger_type: passenger.passengerType,
+				seat_number: passenger.seatNumber,
+				carriage_id: store.carriageID,
+				name: passenger.name,
+				surname: passenger.surname,
+				patronymic: passenger.patronymic,
+				birth_date: passenger.birthDate,
+				passport_series: Number(passenger.passportSeries),
+				passport_number: Number(passenger.passportNumber)
+			})
+		}
+		try {
+			const response = await fetch(`${host}/api/buyTicket`, {
+				method: 'POST', body: JSON.stringify(req_data),
+				headers: {'Login': storeAuth.user.login, 'Content-Type': 'application/json'}, 
+			})
+			if (response.ok) {
+				vueRouter.push({ name: 'show-tickets' })
+			} else if (response.status === 404) {
+				storeAuth.logout()
+				vueRouter.push({name: "not-registered"})
+			}
+		} catch (e) {
+			console.error('Ошибка:', e)
+		}
 	} else {
 		alert('Пожалуйста, заполните все обязательные поля')
 	}
@@ -60,16 +87,15 @@ const handleSubmit = () => {
 
 onMounted(() => {
 	if (store.data.passengers.length === 0) {
-		router.push({ name: 'home' })
+		vueRouter.push({ name: 'home' })
 		return
 	}
 
 	if (store.selectedSeats.length !== store.data.passengers.length) {
-		router.push({ name: 'seat-selection' })
+		vueRouter.push({ name: 'seat-selection' })
 		return
 	}
-	
-	// Инициализируем данные пассажиров
+
 	initializePassengersData()
 })
 </script>
@@ -105,7 +131,7 @@ onMounted(() => {
 				@update="handleUpdate"
 			/>
 			<div class="size-display-1" style="margin-bottom: 1rem;">
-				<button @click="handleSubmit" :disabled="!isFormValid" class="interactive-elem">Получить билет</button>
+				<button @click="handleSubmit" :disabled="!isFormValid" class="interactive-elem">Получить билеты</button>
 			</div>
 		</div>
 	</main>

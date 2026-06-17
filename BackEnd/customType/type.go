@@ -25,3 +25,17 @@ type SeatDB struct {
 	Number   int  `json:"num"`
 	Occupied bool `json:"occ"`
 }
+
+type Ticket struct {
+	RouteId       int    `json:"route_id"`
+	Price         int    `json:"price"`
+	PassengerType string `json:"passenger_type"`
+	SeatNumber    int    `json:"seat_number"`
+	CarriageId    int    `json:"carriage_id"`
+	Name          string `json:"name"`
+	Surname       string `json:"surname"`
+	Patronymic    string `json:"patronymic"`
+	BirthDate     string `json:"birth_date"`
+	PassSeries    int16  `json:"passport_series"`
+	PassNumber    int    `json:"passport_number"`
+}
